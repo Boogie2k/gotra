@@ -3,11 +3,8 @@ import {
   ScrollView,
   StyleSheet,
   Text,
-  TextInput,
   TouchableHighlight,
   View,
-  Image,
-  VirtualizedList,
 } from "react-native";
 import React, { useState, useEffect } from "react";
 import Nav from "./components/Nav";
@@ -18,22 +15,24 @@ import {
   useQuery,
 } from "@tanstack/react-query";
 import { fetchedData } from "./components/fetch";
-//import { fetchedData } from "./components/fetch";
 import { AntDesign } from "@expo/vector-icons";
 import { MaterialIcons } from "@expo/vector-icons";
-//import { profilk } from "../assets/profile-icon.svg";
+import { Platform } from "react-native";
+import { StatusBar } from "react-native";
+import { NavigationContainer } from "@react-navigation/native";
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
 
 const queryClient = new QueryClient();
 
-export function Home() {
+export function Home({ navigation }) {
   return (
     <QueryClientProvider client={queryClient}>
-      <HomeApp />
+      <HomeApp navigation={navigation} />
     </QueryClientProvider>
   );
 }
 
-const HomeApp = () => {
+const HomeApp = ({ navigation }) => {
   /*
   useEffect(() => {
     createTable();
@@ -76,7 +75,7 @@ const HomeApp = () => {
 
   console.log(inProgressNum.length);
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
       <View style={styles.nav}>
         <Nav />
       </View>
@@ -90,7 +89,7 @@ const HomeApp = () => {
               justifyContent: "space-evenly",
             }}
           >
-            <Text style={styles.view}>listss</Text>
+            <Text style={styles.view}>lists</Text>
             <Text style={styles.view}>Boards</Text>
           </View>
           <View style={styles.body}>
@@ -220,14 +219,18 @@ const HomeApp = () => {
         <View style={styles.home}>
           <AntDesign name="home" size={24} color="#4845FF" />
         </View>
-        <View style={styles.add}>
+        <TouchableHighlight
+          title="Go to Details"
+          onPress={() => navigation.navigate("CreateGoal")}
+          style={styles.add}
+        >
           <AntDesign name="pluscircle" size={46} color="grey" />
-        </View>
+        </TouchableHighlight>
         <View style={styles.profile}>
           <MaterialIcons name="account-circle" size={24} color="white" />
         </View>
       </View>
-    </View>
+    </SafeAreaView>
   );
 };
 
@@ -237,7 +240,8 @@ const styles = StyleSheet.create({
   container: {
     backgroundColor: "black",
     flex: 1,
-    paddingTop: 20,
+    paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
+    marginTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
   },
 
   view: {
