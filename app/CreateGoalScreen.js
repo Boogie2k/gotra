@@ -90,13 +90,12 @@ const CreateGoalScreen = () => {
             </View>
           </View>
         </View>
-
-        <TouchableHighlight style={styles.btn}>
-          <Text style={{ color: "white", fontSize: 22, fontWeight: 500 }}>
-            Create Goal
-          </Text>
-        </TouchableHighlight>
       </ScrollView>
+      <TouchableHighlight style={styles.btn}>
+        <Text style={{ color: "white", fontSize: 22, fontWeight: 500 }}>
+          Create Goal
+        </Text>
+      </TouchableHighlight>
     </SafeAreaView>
   );
 };
@@ -169,6 +168,7 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
     marginTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
+    paddingBottom: 20,
   },
 
   nav: {
