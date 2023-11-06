@@ -4,6 +4,7 @@ import HomeScreen from "./app/HomeScreen";
 import CreateGoalScreen from "./app/CreateGoalScreen";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import GoalDetailsScreen from "./app/GoalDetailsScreen";
 
 export default function App() {
   const Stack = createNativeStackNavigator();
@@ -19,6 +20,7 @@ export default function App() {
           component={HomeScreen}
         />
         <Stack.Screen name="CreateGoal" component={CreateGoalScreen} />
+        <Stack.Screen name="GoalDetails" component={GoalDetailsScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );
