@@ -1,4 +1,5 @@
 import {
+  RootTagContext,
   SafeAreaView,
   ScrollView,
   StyleSheet,
@@ -151,6 +152,8 @@ const HomeApp = ({ navigation }) => {
               }}
             >
               {on_hold_num.map((item) => {
+                item.tag.map((tag) => console.log(tag));
+                console.log(item);
                 return (
                   <View key={item.id} style={styles.item}>
                     <View
