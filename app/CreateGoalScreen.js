@@ -40,7 +40,7 @@ const CreateGoalScreen = () => {
 
   let currentDate = `${currentDay}-${currentMonth}-${currentYear}`;
 
-  let start = `${currentYear}-${currentMonth}-${currentDay}`;
+  let start = `${currentMonth}-${currentDay}-${currentYear}`;
 
   const [startDate, setStartDate] = useState(start);
   const [endDate, setEndDate] = useState(start);
@@ -108,7 +108,7 @@ const CreateGoalScreen = () => {
   };
 
   const saveGoal = () => {
-    fetch(`${fetchedData}snippets/`, {
+    fetch(`https://gotra-api-inh9.onrender.com/api/v1/goal/`, {
       method: "POST",
       headers: {
         "content-type": "application/json",
@@ -116,11 +116,12 @@ const CreateGoalScreen = () => {
       body: JSON.stringify({
         title: title,
         description: description,
-        tag: newTag,
+        tags: newTag,
         subgoals: subgoals,
-        start: startDate,
-        end: endDate,
-        not_started: true,
+        startDate,
+        endDate,
+        notStarted: true,
+        author: ["654e0b31a8bd6ceba9a1bb36"],
       }),
     })
       .then((res) => {
@@ -176,7 +177,13 @@ const CreateGoalScreen = () => {
           >
             <View>
               <Text style={styles.dateSta}>Start date</Text>
-              <TextInput value={startDate} style={styles.dateInput} />
+              <TextInput
+                onChangeText={(newText) => {
+                  setStartDate(newText);
+                }}
+                value={startDate}
+                style={styles.dateInput}
+              />
             </View>
             <View>
               <Text style={styles.dateSta}>End date</Text>
@@ -311,10 +318,10 @@ const CreateGoalScreen = () => {
                   console.log(colors);
 
                   if (tag !== "") {
-                    setNewTag([...newTag, { tag_text: tag }]);
+                    setNewTag([...newTag, tag]);
                   }
 
-                  console.log(tag);
+                  //console.log(tag);
                   console.log(newTag);
                 }}
               />
@@ -352,7 +359,7 @@ const CreateGoalScreen = () => {
                             fontWeight: 500,
                           }}
                         >
-                          {item.tag_text}
+                          {item}
                         </Text>
                         <AntDesign
                           name="minuscircleo"
@@ -370,7 +377,7 @@ const CreateGoalScreen = () => {
       </ScrollView>
       <TouchableHighlight onPress={saveGoal} style={styles.btn}>
         <Text style={{ color: "white", fontSize: 22, fontWeight: 500 }}>
-          Create Goal
+          Create Goals
         </Text>
       </TouchableHighlight>
     </SafeAreaView>

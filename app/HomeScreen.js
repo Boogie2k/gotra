@@ -1,5 +1,5 @@
 import {
-  RootTagContext,
+  Pressable,
   SafeAreaView,
   ScrollView,
   StyleSheet,
@@ -45,7 +45,10 @@ const HomeApp = ({ navigation }) => {
   let in_progress;
   const { isLoading, error, data } = useQuery({
     queryKey: ["repoData"],
-    queryFn: () => fetch(`${fetchedData}snippets/`).then((res) => res.json()),
+    queryFn: () =>
+      fetch(`https://gotra-api-inh9.onrender.com/api/v1/goal/`).then((res) =>
+        res.json()
+      ),
   });
 
   if (isLoading) return <Text>loading</Text>;
@@ -54,19 +57,18 @@ const HomeApp = ({ navigation }) => {
 
   // data && console.log(data);
 
-  const not_startedNum =
-    data && data.filter((item) => item.not_started == true);
+  const not_startedNum = data && data.filter((item) => item.notStarted == true);
   const completdNum = data && data.filter((item) => item.completed == true);
   const inProgressNum =
     data &&
     data.filter(
       (item) =>
-        item.not_started !== true &&
+        item.notStarted !== true &&
         item.completed !== true &&
-        item.on_hold !== true
+        item.onHold !== true
     );
 
-  const on_hold_num = data && data.filter((item) => item.on_hold == true);
+  const on_hold_num = data && data.filter((item) => item.onHold == true);
 
   progressProps = {
     not_startedNum: not_startedNum.length,
@@ -74,7 +76,9 @@ const HomeApp = ({ navigation }) => {
     inProgressNum: inProgressNum.length,
   };
 
-  console.log(inProgressNum.length);
+  on_hold_num.map((item) => {
+    console.log(item);
+  });
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.nav}>
@@ -107,9 +111,20 @@ const HomeApp = ({ navigation }) => {
               }}
             >
               {not_startedNum.map((item) => {
+                let date = new Date(item.updatedAt);
+                let formattedDate =
+                  date.getDate().toString().padStart(2, "0") +
+                  "/" +
+                  (date.getMonth() + 1).toString().padStart(2, "0") +
+                  "/" +
+                  date.getFullYear();
+                console.log(formattedDate); // Outputs: 11/12/2023
                 return (
-                  <View
-                    key={item.id}
+                  <Pressable
+                    onPress={() =>
+                      navigation.navigate("GoalDetails", { item, data })
+                    }
+                    key={item._id}
                     horizontal={true}
                     style={[
                       styles.item,
@@ -125,13 +140,13 @@ const HomeApp = ({ navigation }) => {
                       }}
                     >
                       <Text style={styles.itemTitle}>{item.title}</Text>
-                      <Text style={styles.start}>{item.start}</Text>
+                      <Text style={styles.start}>{formattedDate}</Text>
                     </View>
 
                     <View style={styles.progressView}>
-                      <Text style={styles.progress}>{item.progress}%</Text>
+                      <Text style={styles.progress}>0%</Text>
                     </View>
-                  </View>
+                  </Pressable>
                 );
               })}
             </ScrollView>
@@ -152,10 +167,21 @@ const HomeApp = ({ navigation }) => {
               }}
             >
               {on_hold_num.map((item) => {
-                item.tag.map((tag) => console.log(tag));
-                console.log(item);
+                let date = new Date(item.updatedAt);
+                let formattedDate =
+                  date.getDate().toString().padStart(2, "0") +
+                  "/" +
+                  (date.getMonth() + 1).toString().padStart(2, "0") +
+                  "/" +
+                  date.getFullYear();
                 return (
-                  <View key={item.id} style={styles.item}>
+                  <Pressable
+                    key={item._id}
+                    onPress={() =>
+                      navigation.navigate("GoalDetails", { item, data })
+                    }
+                    style={styles.item}
+                  >
                     <View
                       style={{
                         borderLeftWidth: 3,
@@ -165,13 +191,13 @@ const HomeApp = ({ navigation }) => {
                       }}
                     >
                       <Text style={styles.itemTitle}>{item.title}</Text>
-                      <Text style={styles.start}>{item.start}</Text>
+                      <Text style={styles.start}>{formattedDate}</Text>
                     </View>
 
                     <View style={styles.progressView}>
-                      <Text style={styles.progress}>{item.progress}%</Text>
+                      <Text style={styles.progress}>0%</Text>
                     </View>
-                  </View>
+                  </Pressable>
                 );
               })}
             </ScrollView>
@@ -192,8 +218,21 @@ const HomeApp = ({ navigation }) => {
               }}
             >
               {completdNum.map((item) => {
+                let date = new Date(item.updatedAt);
+                let formattedDate =
+                  date.getDate().toString().padStart(2, "0") +
+                  "/" +
+                  (date.getMonth() + 1).toString().padStart(2, "0") +
+                  "/" +
+                  date.getFullYear();
                 return (
-                  <View key={item.id} style={styles.item}>
+                  <Pressable
+                    key={item._id}
+                    onPress={() =>
+                      navigation.navigate("GoalDetails", { item, data })
+                    }
+                    style={styles.item}
+                  >
                     <View
                       style={{
                         borderLeftWidth: 3,
@@ -203,13 +242,13 @@ const HomeApp = ({ navigation }) => {
                       }}
                     >
                       <Text style={styles.itemTitle}>{item.title}</Text>
-                      <Text style={styles.start}>{item.start}</Text>
+                      <Text style={styles.start}>{formattedDate}</Text>
                     </View>
 
                     <View style={styles.progressView}>
-                      <Text style={styles.progress}>{item.progress}%</Text>
+                      <Text style={styles.progress}>0%</Text>
                     </View>
-                  </View>
+                  </Pressable>
                 );
               })}
             </ScrollView>
