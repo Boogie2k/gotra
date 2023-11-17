@@ -86,7 +86,11 @@ const HomeApp = ({ navigation }) => {
       </View>
       <ScrollView>
         <View style={{ marginTop: 33 }}>
-          <Progress progressProps={progressProps} navigation={navigation} />
+          <Progress
+            progressProps={progressProps}
+            data={data}
+            navigation={navigation}
+          />
           <View
             style={{
               marginTop: 30,
