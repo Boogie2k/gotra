@@ -86,7 +86,7 @@ const HomeApp = ({ navigation }) => {
       </View>
       <ScrollView>
         <View style={{ marginTop: 33 }}>
-          <Progress progressProps={progressProps} />
+          <Progress progressProps={progressProps} navigation={navigation} />
           <View
             style={{
               marginTop: 30,
@@ -246,7 +246,9 @@ const HomeApp = ({ navigation }) => {
                     </View>
 
                     <View style={styles.progressView}>
-                      <Text style={styles.progress}>0%</Text>
+                      <View style={{}}>
+                        <Text style={styles.progress}>0%</Text>
+                      </View>
                     </View>
                   </Pressable>
                 );
