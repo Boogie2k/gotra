@@ -22,6 +22,7 @@ import { Platform } from "react-native";
 import { StatusBar } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const queryClient = new QueryClient();
 
@@ -76,9 +77,6 @@ const HomeApp = ({ navigation }) => {
     inProgressNum: inProgressNum.length,
   };
 
-  on_hold_num.map((item) => {
-    console.log(item);
-  });
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.nav}>
@@ -122,7 +120,7 @@ const HomeApp = ({ navigation }) => {
                   (date.getMonth() + 1).toString().padStart(2, "0") +
                   "/" +
                   date.getFullYear();
-                console.log(formattedDate); // Outputs: 11/12/2023
+
                 return (
                   <Pressable
                     onPress={() =>
@@ -148,7 +146,7 @@ const HomeApp = ({ navigation }) => {
                     </View>
 
                     <View style={styles.progressView}>
-                      <Text style={styles.progress}>0%</Text>
+                      <Text style={styles.progress}>{item.progress}%</Text>
                     </View>
                   </Pressable>
                 );
@@ -199,7 +197,7 @@ const HomeApp = ({ navigation }) => {
                     </View>
 
                     <View style={styles.progressView}>
-                      <Text style={styles.progress}>0%</Text>
+                      <Text style={styles.progress}>{item.progress}%</Text>
                     </View>
                   </Pressable>
                 );
@@ -251,7 +249,7 @@ const HomeApp = ({ navigation }) => {
 
                     <View style={styles.progressView}>
                       <View style={{}}>
-                        <Text style={styles.progress}>0%</Text>
+                        <Text style={styles.progress}>{item.progress}%</Text>
                       </View>
                     </View>
                   </Pressable>

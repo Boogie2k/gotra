@@ -7,13 +7,25 @@ import {
   Platform,
   ScrollView,
   Pressable,
+  Dimensions,
 } from "react-native";
-import React from "react";
+import React, { useState } from "react";
 import { AntDesign } from "@expo/vector-icons";
+import {
+  LineChart,
+  BarChart,
+  PieChart,
+  ProgressChart,
+  ContributionGraph,
+  StackedBarChart,
+} from "react-native-chart-kit";
 
 const ProgressScreen = ({ route }) => {
+  const screenWidth = Dimensions.get("window").width;
+  const screenHeight = Dimensions.get("window").height;
+
   const { data } = route.params;
-  console.log(data);
+  //console.log(data);
   // console.log(data);
 
   const not_startedNum = data && data.filter((item) => item.notStarted == true);
@@ -29,17 +41,133 @@ const ProgressScreen = ({ route }) => {
 
   const on_hold_num = data && data.filter((item) => item.onHold == true);
 
-  progressProps = {
+  let progressProps = {
     not_startedNum: not_startedNum.length,
     completedNum: completdNum.length,
     inProgressNum: inProgressNum.length,
   };
+
+  const [firstHalf, setFirstHalf] = useState(true);
+
+  const labels = firstHalf
+    ? ["Jan", "Feb", "Mar", "Apr", "May", "Jun"]
+    : ["Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+
+  const datas = {
+    labels: ["January", "February", "March", "April", "May", "June"],
+    datasets: [
+      {
+        data: [20, 45, 28, 80, 99, 43],
+        color: (opacity = 1) => `rgba(134, 65, 244, ${opacity})`, // optional
+        strokeWidth: 2, // optional
+      },
+    ],
+    legend: ["Rainy Days"], // optional
+  };
+  let counts = Array(12).fill(0);
+
+  not_startedNum.forEach((item) => {
+    let date = new Date(item.updatedAt);
+    let month = date.getMonth(); // Months are zero-based
+    counts[month]++;
+  });
+  let slicedCountsForOnHold = firstHalf
+    ? counts.slice(0, 6)
+    : counts.slice(6, 12);
+
+  completdNum.forEach((item) => {
+    let date = new Date(item.updatedAt);
+    let month = date.getMonth(); // Months are zero-based
+    counts[month]++;
+  });
+  let slicedCountsForcompleted = firstHalf
+    ? counts.slice(0, 6)
+    : counts.slice(6, 12);
+
+  not_startedNum.forEach((item) => {
+    let date = new Date(item.updatedAt);
+    let month = date.getMonth(); // Months are zero-based
+    counts[month]++;
+  });
+  let slicedCountsForNotStarted = firstHalf
+    ? counts.slice(0, 6)
+    : counts.slice(6, 12);
+
+  inProgressNum.forEach((item) => {
+    let date = new Date(item.updatedAt);
+    let month = date.getMonth(); // Months are zero-based
+    counts[month]++;
+  });
+  let slicedCountsForInProgress = firstHalf
+    ? counts.slice(0, 6)
+    : counts.slice(6, 12);
+
+  console.log(counts);
   return (
     <SafeAreaView style={styles.container}>
       <ProgressScreenNav />
       <ScrollView style={{}}>
         <View style={styles.chart}>
-          <Text style={{ color: "white" }}>lllll</Text>
+          <Text
+            onPress={() => {
+              setFirstHalf(!firstHalf);
+            }}
+            style={{ color: "white" }}
+          >
+            Next
+          </Text>
+          <LineChart
+            data={{
+              labels: labels,
+              datasets: [
+                {
+                  data: slicedCountsForOnHold,
+                  color: (opacity = 1) => `rgba(255,96,134, ${opacity})`, // optional
+                  strokeWidth: 2, // optional
+                },
+                {
+                  data: slicedCountsForcompleted,
+                  color: (opacity = 1) => `rgba(129, 255, 157, ${opacity})`, // optional
+                  strokeWidth: 2, // optional
+                },
+                {
+                  data: slicedCountsForNotStarted,
+                  color: (opacity = 1) => `rgba(	206, 175, 237, ${opacity})`, // optional
+                  strokeWidth: 2, // optional
+                },
+                {
+                  data: slicedCountsForInProgress,
+                  color: (opacity = 1) => `rgba(	98, 95, 250, ${opacity})`, // optional
+                  strokeWidth: 2, // optional
+                },
+              ],
+              legend: ["Rainy Days"], // optional
+            }}
+            width={screenWidth}
+            height={screenHeight / 2.5}
+            chartConfig={{
+              backgroundColor: "#1E1E1E",
+              backgroundGradientFrom: "#161313",
+              backgroundGradientTo: "#161313",
+              decimalPlaces: 0, // optional, defaults to 2dp
+              color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
+              labelColor: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
+              strokeWidth: 0,
+              style: {
+                borderRadius: 16,
+              },
+              propsForDots: {
+                r: "6",
+                strokeWidth: "2",
+                stroke: "#ffa726",
+              },
+            }}
+            bezier
+            style={{
+              marginVertical: 8,
+              borderRadius: 16,
+            }}
+          />
         </View>
         <View
           style={{
@@ -54,7 +182,7 @@ const ProgressScreen = ({ route }) => {
           }}
         >
           {data.map((item) => {
-            console.log(item);
+            //    console.log(item);
             let date = new Date(item.updatedAt);
             let formattedDate =
               date.getDate().toString().padStart(2, "0") +
@@ -62,7 +190,8 @@ const ProgressScreen = ({ route }) => {
               (date.getMonth() + 1).toString().padStart(2, "0") +
               "/" +
               date.getFullYear();
-            console.log(formattedDate); // Outputs: 11/12/2023
+            // console.log(formattedDate); // Outputs: 11/12/2023
+
             return (
               <Pressable
                 onPress={() =>
@@ -134,7 +263,7 @@ const styles = StyleSheet.create({
   chart: {
     minHeight: 438,
     //   width: 299,
-    backgroundColor: "red",
+    //  backgroundColor: "red",
   },
 
   view: {

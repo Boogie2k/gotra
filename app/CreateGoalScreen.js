@@ -121,6 +121,7 @@ const CreateGoalScreen = () => {
         startDate,
         endDate,
         notStarted: true,
+        progress:0,
         author: ["654e0b31a8bd6ceba9a1bb36"],
       }),
     })
