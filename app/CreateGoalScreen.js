@@ -17,39 +17,31 @@ import { Octicons } from "@expo/vector-icons";
 
 import { fetchedData } from "./components/fetch";
 
-const CreateGoalScreen = () => {
+const CreateGoalScreen = ({ route }) => {
+  const { decodedUserId } = route.params;
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [subgoals, setSubgoals] = useState([]);
-  const [textInputs, setTextInputs] = useState([]);
   const [subgoalText, setSubgoalText] = useState("");
-
   const [tag, setTag] = useState("");
   const [newTag, setNewTag] = useState([]);
-
+  const [startDate, setStartDate] = useState(start);
+  const [endDate, setEndDate] = useState(start);
   // Date object
   const newDate = new Date();
-
   let currentDay = String(newDate.getDate()).padStart(2, "0");
-
   let currentMonth = String(newDate.getMonth() + 1).padStart(2, "0");
-
   let currentYear = newDate.getFullYear();
 
   // we will display the date as DD-MM-YYYY
 
   let currentDate = `${currentDay}-${currentMonth}-${currentYear}`;
-
   let start = `${currentMonth}-${currentDay}-${currentYear}`;
 
-  const [startDate, setStartDate] = useState(start);
-  const [endDate, setEndDate] = useState(start);
   // console.log("The current date is " + currentDate);
 
   let colors;
-
   let randomColor;
-
   // Define state for colors
   const [tagColors, setTagColors] = useState([]);
 
@@ -74,38 +66,7 @@ const CreateGoalScreen = () => {
 
     setSubgoals(updatedGoal);
   };
-  const indent = textInputs.length;
-
-  const addNewTextInput = () => {
-    let index = textInputs.length;
-    const newTextInput = (
-      <TextInput
-        style={{
-          backgroundColor: "#2A2A2A",
-          width: 200,
-          minHeight: 57,
-          borderRadius: 20,
-          color: "white",
-          paddingLeft: 9,
-        }}
-        key={textInputs.length}
-        placeholder={`Text Input ${textInputs.length + 1}`}
-        onChangeText={(text) => {
-          let newSubgoals = [...subgoals];
-          newSubgoals[index] = text;
-          setSubgoals(newSubgoals);
-        }}
-      />
-    );
-
-    if (subgoals.includes("")) {
-      console.log("The array contains an empty string");
-    } else {
-      console.log("The array does not contain an empty string");
-    }
-
-    setTextInputs([...textInputs, newTextInput]);
-  };
+  console.log(decodedUserId);
 
   const saveGoal = () => {
     fetch(`https://gotra-api-inh9.onrender.com/api/v1/goal/`, {
@@ -121,8 +82,8 @@ const CreateGoalScreen = () => {
         startDate,
         endDate,
         notStarted: true,
-        progress:0,
-        author: ["654e0b31a8bd6ceba9a1bb36"],
+        progress: 0,
+        author: decodedUserId,
       }),
     })
       .then((res) => {

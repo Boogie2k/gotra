@@ -23,6 +23,8 @@ import { StatusBar } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { jwtDecode } from "jwt-decode";
+import { decode as atob, encode as btoa } from "base-64";
 
 const queryClient = new QueryClient();
 
@@ -41,9 +43,37 @@ const HomeApp = ({ navigation }) => {
   }, []);
 */
 
-  let not_started;
-  let completed;
-  let in_progress;
+  const [loginVal, setLoginVal] = useState("");
+
+  const getData = async () => {
+    try {
+      const val = await AsyncStorage.getItem("my-key");
+
+      setLoginVal(val);
+      if (loginVal !== null) {
+        // value previously stored
+        console.log(loginVal);
+      } else {
+        console.log("emp");
+      }
+    } catch (e) {
+      // error reading value
+      console.log("err");
+    }
+  };
+
+  getData();
+
+  if (!global.btoa) {
+    global.btoa = btoa;
+  }
+  if (!global.atob) {
+    global.atob = atob;
+  }
+
+  let decodedUser = loginVal && jwtDecode(loginVal);
+  let decodedUserId = decodedUser && decodedUser.userId;
+
   const { isLoading, error, data } = useQuery({
     queryKey: ["repoData"],
     queryFn: () =>
@@ -58,24 +88,40 @@ const HomeApp = ({ navigation }) => {
 
   // data && console.log(data);
 
-  const not_startedNum = data && data.filter((item) => item.notStarted == true);
-  const completdNum = data && data.filter((item) => item.completed == true);
-  const inProgressNum =
+  // let userData = data && data.filter((item) => item._id !== decodedUserId);
+
+  let userData =
     data &&
-    data.filter(
+    data.filter((item) => {
+      return item.author.some((author) => author._id === decodedUserId);
+    });
+
+  //console.log({ xy: xy });
+
+  const not_startedNum =
+    userData && userData.filter((item) => item.notStarted == true);
+  const completdNum =
+    userData && userData.filter((item) => item.completed == true);
+
+  const inProgressNum =
+    userData &&
+    userData.filter(
       (item) =>
         item.notStarted !== true &&
         item.completed !== true &&
         item.onHold !== true
     );
 
-  const on_hold_num = data && data.filter((item) => item.onHold == true);
+  const on_hold_num =
+    userData && userData.filter((item) => item.onHold == true);
 
   progressProps = {
     not_startedNum: not_startedNum.length,
     completedNum: completdNum.length,
     inProgressNum: inProgressNum.length,
   };
+
+  //console.log(decodedUser.userId);
 
   return (
     <SafeAreaView style={styles.container}>
@@ -267,7 +313,7 @@ const HomeApp = ({ navigation }) => {
         </View>
         <TouchableHighlight
           title="Go to Details"
-          onPress={() => navigation.navigate("CreateGoal")}
+          onPress={() => navigation.navigate("CreateGoal", { decodedUserId })}
           style={styles.add}
         >
           <AntDesign name="pluscircle" size={46} color="grey" />
