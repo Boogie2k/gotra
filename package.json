@@ -32,7 +32,8 @@
     "react-native-sqlite-storage": "^6.0.1",
     "react-native-svg": "13.4.0",
     "realm": "^11.10.1",
-    "vasern": "^0.3.68"
+    "vasern": "^0.3.68",
+    "expo-updates": "~0.16.4"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0"

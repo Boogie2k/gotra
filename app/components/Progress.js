@@ -3,8 +3,8 @@ import React from "react";
 
 import { AntDesign } from "@expo/vector-icons";
 
-const Progress = ({ progressProps, navigation, data }) => {
-  console.log(data);
+const Progress = ({ progressProps, navigation, data, userData }) => {
+  console.log({ userData });
   return (
     <View style={styles.container}>
       <View
@@ -16,7 +16,9 @@ const Progress = ({ progressProps, navigation, data }) => {
       >
         <Text style={styles.head}>Your goal's Progress</Text>
         <AntDesign
-          onPress={() => navigation.navigate("ProgressScreen", { data })}
+          onPress={() =>
+            navigation.navigate("ProgressScreen", { data, userData })
+          }
           name="rightsquare"
           size={24}
           color="white"

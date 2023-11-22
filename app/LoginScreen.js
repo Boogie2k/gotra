@@ -13,11 +13,13 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { jwtDecode } from "jwt-decode";
 import { decode as atob, encode as btoa } from "base-64";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import * as Updates from "expo-updates";
 
-const LoginScreen = ({ navigation }) => {
+const LoginScreen = ({ navigation, isLoggedIn, setIsLoggedIn }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
+  console.log(isLoggedIn);
   const getData = async () => {
     try {
       loginVal = await AsyncStorage.getItem("my-key");
@@ -72,7 +74,7 @@ const LoginScreen = ({ navigation }) => {
           let user = jwtDecode(data.token);
 
           AsyncStorage.setItem("my-key", data.token);
-
+          setIsLoggedIn(!isLoggedIn);
           //user && console.log(user);
           // console.log(user);
         }

@@ -15,10 +15,8 @@ import { AntDesign } from "@expo/vector-icons";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { Octicons } from "@expo/vector-icons";
 
-import { fetchedData } from "./components/fetch";
-
 const CreateGoalScreen = ({ route }) => {
-  const { decodedUserId } = route.params;
+  const { decodedUserId, newGoalRefresh, setNewGoalRefresh } = route.params;
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [subgoals, setSubgoals] = useState([]);
@@ -93,7 +91,9 @@ const CreateGoalScreen = ({ route }) => {
         }
         return res.json();
       })
-      .then((data) => console.log(data))
+      .then((data) => {
+        console.log(data);
+      })
       .catch((err) => console.log(err));
   };
   console.log(subgoals);

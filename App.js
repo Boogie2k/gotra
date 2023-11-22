@@ -9,6 +9,7 @@ import ProgressScreen from "./app/ProgressScreen";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import RegisterScreen from "./app/RegisterScreen";
 import LoginScreen from "./app/LoginScreen";
+import AccountScreen from "./app/AccountScreen";
 import { useState } from "react";
 
 export default function App() {
@@ -16,6 +17,8 @@ export default function App() {
 
   // let loginVal
   const [loginVal, setLoginval] = useState("");
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [isLoggedout, setIsLoggedOut] = useState(false);
 
   //storeData();
 
@@ -63,18 +66,31 @@ export default function App() {
             component={HomeScreen}
           />
         ) : (
-          <Stack.Screen
-            name="Login"
-            options={{
-              title: "",
-            }}
-            component={LoginScreen}
-          />
+          <Stack.Screen name="Login">
+            {(props) => (
+              <LoginScreen
+                {...props}
+                isLoggedIn={isLoggedIn}
+                setIsLoggedIn={setIsLoggedIn}
+              />
+            )}
+          </Stack.Screen>
         )}
         <Stack.Screen name="CreateGoal" component={CreateGoalScreen} />
         <Stack.Screen name="GoalDetails" component={GoalDetailsScreen} />
         <Stack.Screen name="ProgressScreen" component={ProgressScreen} />
         <Stack.Screen name="Register" component={RegisterScreen} />
+
+        <Stack.Screen name="Account">
+          {(props) => (
+            <AccountScreen
+              {...props}
+              isLoggedout={isLoggedout}
+              setIsLoggedOut={setIsLoggedOut}
+              removeValue={removeValue}
+            />
+          )}
+        </Stack.Screen>
       </Stack.Navigator>
     </NavigationContainer>
   );

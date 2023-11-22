@@ -24,22 +24,25 @@ const ProgressScreen = ({ route }) => {
   const screenWidth = Dimensions.get("window").width;
   const screenHeight = Dimensions.get("window").height;
 
-  const { data } = route.params;
+  const { data, userData } = route.params;
   //console.log(data);
-  // console.log(data);
+  console.log(userData);
 
-  const not_startedNum = data && data.filter((item) => item.notStarted == true);
-  const completdNum = data && data.filter((item) => item.completed == true);
+  const not_startedNum =
+    userData && userData.filter((item) => item.notStarted == true);
+  const completdNum =
+    userData && userData.filter((item) => item.completed == true);
   const inProgressNum =
-    data &&
-    data.filter(
+    userData &&
+    userData.filter(
       (item) =>
         item.notStarted !== true &&
         item.completed !== true &&
         item.onHold !== true
     );
 
-  const on_hold_num = data && data.filter((item) => item.onHold == true);
+  const on_hold_num =
+    userData && userData.filter((item) => item.onHold == true);
 
   let progressProps = {
     not_startedNum: not_startedNum.length,
@@ -102,7 +105,6 @@ const ProgressScreen = ({ route }) => {
     ? counts.slice(0, 6)
     : counts.slice(6, 12);
 
-  console.log(counts);
   return (
     <SafeAreaView style={styles.container}>
       <ProgressScreenNav />

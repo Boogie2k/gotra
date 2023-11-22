@@ -42,7 +42,7 @@ const HomeApp = ({ navigation }) => {
     createTable();
   }, []);
 */
-
+  const [newGoalRefresh, setNewGoalRefresh] = useState(false);
   const [loginVal, setLoginVal] = useState("");
 
   const getData = async () => {
@@ -133,6 +133,7 @@ const HomeApp = ({ navigation }) => {
           <Progress
             progressProps={progressProps}
             data={data}
+            userData={userData}
             navigation={navigation}
           />
           <View
@@ -313,13 +314,24 @@ const HomeApp = ({ navigation }) => {
         </View>
         <TouchableHighlight
           title="Go to Details"
-          onPress={() => navigation.navigate("CreateGoal", { decodedUserId })}
+          onPress={() =>
+            navigation.navigate("CreateGoal", {
+              decodedUserId,
+            })
+          }
           style={styles.add}
         >
           <AntDesign name="pluscircle" size={46} color="grey" />
         </TouchableHighlight>
         <View style={styles.profile}>
-          <MaterialIcons name="account-circle" size={24} color="white" />
+          <MaterialIcons
+            onPress={() => {
+              navigation.navigate("Account");
+            }}
+            name="account-circle"
+            size={24}
+            color="white"
+          />
         </View>
       </View>
     </SafeAreaView>
