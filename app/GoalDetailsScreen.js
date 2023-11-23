@@ -12,11 +12,11 @@ import React, { useEffect, useState } from "react";
 import { AntDesign } from "@expo/vector-icons";
 import { Entypo } from "@expo/vector-icons";
 import { Ionicons } from "@expo/vector-icons";
-import { fetchedData } from "./components/fetch";
+
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const GoalDetailsScreen = ({ route, navigation }) => {
-  const { item, data } = route.params;
+  const { item, userData } = route.params;
   const [title, setTitle] = useState(item.title);
   const [description, setDescription] = useState(item.description);
   const [startDate, setStartDate] = useState(item.startDate);
@@ -113,43 +113,8 @@ const GoalDetailsScreen = ({ route, navigation }) => {
     endDateFormat.getFullYear();
   //console.log(formattedDate); // Outputs: 11/12/2023
 
-  const storeData = async (value) => {
-    try {
-      await AsyncStorage.setItem("my-key", item._id);
-    } catch (e) {
-      // saving error
-    }
-  };
-
   //storeData();
 
-  const removeValue = async () => {
-    try {
-      await AsyncStorage.removeItem("my-key");
-    } catch (e) {
-      // remove error
-    }
-
-    console.log("Done.");
-  };
-
-  removeValue();
-  const getData = async () => {
-    try {
-      const value = await AsyncStorage.getItem("my-key");
-      if (value !== null) {
-        // value previously stored
-        console.log(value);
-      } else {
-        console.log("emp");
-      }
-    } catch (e) {
-      // error reading value
-      console.log("err");
-    }
-  };
-
-  getData();
   return (
     <SafeAreaView style={styles.container}>
       <GoalDetailsNav deleteGoal={deleteGoal} saveGoal={saveGoal} />

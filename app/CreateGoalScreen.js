@@ -16,16 +16,6 @@ import DateTimePicker from "@react-native-community/datetimepicker";
 import { Octicons } from "@expo/vector-icons";
 
 const CreateGoalScreen = ({ route }) => {
-  const { decodedUserId, newGoalRefresh, setNewGoalRefresh } = route.params;
-  const [title, setTitle] = useState("");
-  const [description, setDescription] = useState("");
-  const [subgoals, setSubgoals] = useState([]);
-  const [subgoalText, setSubgoalText] = useState("");
-  const [tag, setTag] = useState("");
-  const [newTag, setNewTag] = useState([]);
-  const [startDate, setStartDate] = useState(start);
-  const [endDate, setEndDate] = useState(start);
-  // Date object
   const newDate = new Date();
   let currentDay = String(newDate.getDate()).padStart(2, "0");
   let currentMonth = String(newDate.getMonth() + 1).padStart(2, "0");
@@ -34,7 +24,18 @@ const CreateGoalScreen = ({ route }) => {
   // we will display the date as DD-MM-YYYY
 
   let currentDate = `${currentDay}-${currentMonth}-${currentYear}`;
-  let start = `${currentMonth}-${currentDay}-${currentYear}`;
+  let initialDate = `${currentMonth}-${currentDay}-${currentYear}`;
+
+  const { decodedUserId } = route.params;
+  const [title, setTitle] = useState("");
+  const [description, setDescription] = useState("");
+  const [subgoals, setSubgoals] = useState([]);
+  const [subgoalText, setSubgoalText] = useState("");
+  const [tag, setTag] = useState("");
+  const [newTag, setNewTag] = useState([]);
+  const [startDate, setStartDate] = useState(initialDate);
+  const [endDate, setEndDate] = useState(initialDate);
+  // Date object
 
   // console.log("The current date is " + currentDate);
 
@@ -64,8 +65,8 @@ const CreateGoalScreen = ({ route }) => {
 
     setSubgoals(updatedGoal);
   };
-  console.log(decodedUserId);
 
+  console.log(`${currentMonth}-${currentDay}-${currentYear}`);
   const saveGoal = () => {
     fetch(`https://gotra-api-inh9.onrender.com/api/v1/goal/`, {
       method: "POST",
@@ -82,6 +83,7 @@ const CreateGoalScreen = ({ route }) => {
         notStarted: true,
         progress: 0,
         author: decodedUserId,
+        progress: 0,
       }),
     })
       .then((res) => {
@@ -96,7 +98,7 @@ const CreateGoalScreen = ({ route }) => {
       })
       .catch((err) => console.log(err));
   };
-  console.log(subgoals);
+
   return (
     <SafeAreaView style={styles.container}>
       <GoalScreenNav />

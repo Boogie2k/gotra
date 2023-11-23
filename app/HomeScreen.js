@@ -6,6 +6,7 @@ import {
   Text,
   TouchableHighlight,
   View,
+  RefreshControl,
 } from "react-native";
 import React, { useState, useEffect } from "react";
 import Nav from "./components/Nav";
@@ -15,18 +16,19 @@ import {
   QueryClientProvider,
   useQuery,
 } from "@tanstack/react-query";
-import { fetchedData } from "./components/fetch";
 import { AntDesign } from "@expo/vector-icons";
 import { MaterialIcons } from "@expo/vector-icons";
 import { Platform } from "react-native";
 import { StatusBar } from "react-native";
-import { NavigationContainer } from "@react-navigation/native";
-import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { jwtDecode } from "jwt-decode";
 import { decode as atob, encode as btoa } from "base-64";
 
 const queryClient = new QueryClient();
+
+const wait = (timeout) => {
+  return new Promise((resolve) => setTimeout(resolve, timeout));
+};
 
 export function Home({ navigation }) {
   return (
@@ -42,8 +44,10 @@ const HomeApp = ({ navigation }) => {
     createTable();
   }, []);
 */
-  const [newGoalRefresh, setNewGoalRefresh] = useState(false);
+
   const [loginVal, setLoginVal] = useState("");
+  const [refreshing, setRefreshing] = React.useState(false);
+  const [enablePTR, setEnablePTR] = React.useState(false);
 
   const getData = async () => {
     try {
@@ -52,7 +56,7 @@ const HomeApp = ({ navigation }) => {
       setLoginVal(val);
       if (loginVal !== null) {
         // value previously stored
-        console.log(loginVal);
+        // console.log(loginVal);
       } else {
         console.log("emp");
       }
@@ -86,17 +90,11 @@ const HomeApp = ({ navigation }) => {
 
   if (error) return <Text>errnnors:jjs,,,{error.message}</Text>;
 
-  // data && console.log(data);
-
-  // let userData = data && data.filter((item) => item._id !== decodedUserId);
-
   let userData =
     data &&
     data.filter((item) => {
       return item.author.some((author) => author._id === decodedUserId);
     });
-
-  //console.log({ xy: xy });
 
   const not_startedNum =
     userData && userData.filter((item) => item.notStarted == true);
@@ -120,9 +118,7 @@ const HomeApp = ({ navigation }) => {
     completedNum: completdNum.length,
     inProgressNum: inProgressNum.length,
   };
-
-  //console.log(decodedUser.userId);
-
+  console.log;
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.nav}>
@@ -143,7 +139,22 @@ const HomeApp = ({ navigation }) => {
               justifyContent: "space-evenly",
             }}
           >
-            <Text style={styles.view}>lists</Text>
+            <Text
+              onPress={() => {
+                userData =
+                  data &&
+                  data.filter((item) => {
+                    return item.author.some(
+                      (author) => author._id === decodedUserId
+                    );
+                  });
+
+                console.log("done");
+              }}
+              style={styles.view}
+            >
+              lists
+            </Text>
             <Text style={styles.view}>Boards</Text>
           </View>
           <View style={styles.body}>
@@ -227,7 +238,7 @@ const HomeApp = ({ navigation }) => {
                   <Pressable
                     key={item._id}
                     onPress={() =>
-                      navigation.navigate("GoalDetails", { item, data })
+                      navigation.navigate("GoalDetails", { item, userData })
                     }
                     style={styles.item}
                   >
@@ -298,6 +309,62 @@ const HomeApp = ({ navigation }) => {
                       <View style={{}}>
                         <Text style={styles.progress}>{item.progress}%</Text>
                       </View>
+                    </View>
+                  </Pressable>
+                );
+              })}
+            </ScrollView>
+          </View>
+          <View style={styles.body}>
+            <View style={styles.header}>
+              <Text style={[styles.headText, { color: `rgb(	98, 95, 250)` }]}>
+                In Progress
+              </Text>
+              <Text style={styles.see}>See all</Text>
+            </View>
+
+            <ScrollView
+              horizontal={true}
+              contentContainerStyle={{
+                display: "flex",
+                flexDirection: "row",
+              }}
+            >
+              {inProgressNum.map((item) => {
+                let date = new Date(item.updatedAt);
+                let formattedDate =
+                  date.getDate().toString().padStart(2, "0") +
+                  "/" +
+                  (date.getMonth() + 1).toString().padStart(2, "0") +
+                  "/" +
+                  date.getFullYear();
+
+                return (
+                  <Pressable
+                    onPress={() =>
+                      navigation.navigate("GoalDetails", { item, data })
+                    }
+                    key={item._id}
+                    horizontal={true}
+                    style={[
+                      styles.item,
+                      { justifyContent: "space-between", alignItems: "center" },
+                    ]}
+                  >
+                    <View
+                      style={{
+                        borderLeftWidth: 3,
+                        borderLeftStyle: "solid",
+                        borderLeftColor: `rgb(	98, 95, 250)`,
+                        paddingLeft: 13,
+                      }}
+                    >
+                      <Text style={styles.itemTitle}>{item.title}</Text>
+                      <Text style={styles.start}>{formattedDate}</Text>
+                    </View>
+
+                    <View style={styles.progressView}>
+                      <Text style={styles.progress}>{item.progress}%</Text>
                     </View>
                   </Pressable>
                 );

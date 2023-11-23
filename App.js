@@ -10,7 +10,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import RegisterScreen from "./app/RegisterScreen";
 import LoginScreen from "./app/LoginScreen";
 import AccountScreen from "./app/AccountScreen";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 export default function App() {
   const Stack = createNativeStackNavigator();
@@ -20,8 +20,6 @@ export default function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isLoggedout, setIsLoggedOut] = useState(false);
 
-  //storeData();
-
   const getData = async () => {
     try {
       const val = await AsyncStorage.getItem("my-key");
@@ -29,7 +27,7 @@ export default function App() {
       setLoginval(val);
       if (loginVal !== null) {
         // value previously stored
-        console.log(loginVal);
+        //  console.log(loginVal);
       } else {
         console.log("emp");
       }
@@ -63,8 +61,9 @@ export default function App() {
             options={{
               title: "",
             }}
-            component={HomeScreen}
-          />
+          >
+            {(props) => <HomeScreen {...props} />}
+          </Stack.Screen>
         ) : (
           <Stack.Screen name="Login">
             {(props) => (
@@ -76,11 +75,13 @@ export default function App() {
             )}
           </Stack.Screen>
         )}
-        <Stack.Screen name="CreateGoal" component={CreateGoalScreen} />
+
+        <Stack.Screen name="CreateGoal">
+          {(props) => <CreateGoalScreen {...props} />}
+        </Stack.Screen>
         <Stack.Screen name="GoalDetails" component={GoalDetailsScreen} />
         <Stack.Screen name="ProgressScreen" component={ProgressScreen} />
         <Stack.Screen name="Register" component={RegisterScreen} />
-
         <Stack.Screen name="Account">
           {(props) => (
             <AccountScreen

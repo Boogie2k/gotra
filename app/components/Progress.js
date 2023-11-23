@@ -4,7 +4,6 @@ import React from "react";
 import { AntDesign } from "@expo/vector-icons";
 
 const Progress = ({ progressProps, navigation, data, userData }) => {
-  console.log({ userData });
   return (
     <View style={styles.container}>
       <View
