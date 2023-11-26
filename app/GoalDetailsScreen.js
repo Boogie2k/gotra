@@ -7,6 +7,7 @@ import {
   SafeAreaView,
   ScrollView,
   TextInput,
+  ActivityIndicator,
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import { AntDesign } from "@expo/vector-icons";
@@ -15,7 +16,12 @@ import { Ionicons } from "@expo/vector-icons";
 
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
-const GoalDetailsScreen = ({ route, navigation, setReloadHome }) => {
+const GoalDetailsScreen = ({ route, setReloadHome, navigation }) => {
+  const [loader, setLoader] = useState(false);
+  const [isSuccessModal, setIsSuccessModal] = useState(false);
+  const [isErrorModal, setIsErrorModal] = useState(false);
+  const [isDeleteModalSuccess, setIsDeleteModalSuccess] = useState(false);
+  const [isDeleteModalError, setIsDeleteModalError] = useState(false);
   const { item, userData } = route.params;
   const [title, setTitle] = useState(item.title);
   const [description, setDescription] = useState(item.description);
@@ -40,6 +46,34 @@ const GoalDetailsScreen = ({ route, navigation, setReloadHome }) => {
     progressPercentage = 100;
   }
 
+  const deleteModalSuccess = () => {
+    setIsDeleteModalSuccess(true);
+
+    setTimeout(() => {
+      setIsDeleteModalSuccess(false);
+    }, 2000);
+  };
+
+  const deleteModalError = () => {
+    setIsDeleteModalError(true);
+    setTimeout(() => {
+      setIsDeleteModalError(false);
+    }, 2000);
+  };
+
+  const saveModalSuccess = () => {
+    setIsSuccessModal(true);
+    setTimeout(() => {
+      setIsSuccessModal(false);
+    }, 2000);
+  };
+
+  const saveModalError = () => {
+    setIsErrorModal(false);
+    setTimeout(() => {
+      setIsErrorModal(false);
+    }, 2000);
+  };
   useEffect(() => {
     if (progressPercentage == 100) {
       setCompleted(true);
@@ -60,12 +94,17 @@ const GoalDetailsScreen = ({ route, navigation, setReloadHome }) => {
       })
       .then((json) => {
         console.log("Goal deleted successfully");
+        setReloadHome(true);
+        deleteModalSuccess();
+        navigation.goBack();
       })
       .catch((error) => {
         console.log("There was a problem with the fetch operation: " + error);
+        deleteModalError();
       });
   };
   const saveGoal = () => {
+    setLoader(true);
     fetch(`https://gotra-api-inh9.onrender.com/api/v1/goal/${item._id}/`, {
       method: "PATCH",
       headers: {
@@ -94,8 +133,15 @@ const GoalDetailsScreen = ({ route, navigation, setReloadHome }) => {
       .then((data) => {
         console.log(data);
         setReloadHome(true);
+        setLoader(false);
+
+        saveModalSuccess();
       })
-      .catch((err) => console.log(err));
+      .catch((err) => {
+        console.log(err);
+        setLoader(false);
+        saveModalError();
+      });
   };
   console.log({ progressPercentage });
 
@@ -120,8 +166,32 @@ const GoalDetailsScreen = ({ route, navigation, setReloadHome }) => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <GoalDetailsNav deleteGoal={deleteGoal} saveGoal={saveGoal} />
-
+      <GoalDetailsNav
+        deleteGoal={deleteGoal}
+        saveGoal={saveGoal}
+        loader={loader}
+        setLoader={setLoader}
+        navigation={navigation}
+      />
+      {isSuccessModal && <Text style={styles.successModal}> Saved </Text>}
+      {isErrorModal && (
+        <Text style={[styles.successModal, { backgroundColor: "red" }]}>
+          {" "}
+          Goal couldn't be created{" "}
+        </Text>
+      )}
+      {isDeleteModalSuccess && (
+        <Text style={[styles.successModal, { backgroundColor: "red" }]}>
+          {" "}
+          Goal has been deleted
+        </Text>
+      )}
+      {isDeleteModalError && (
+        <Text style={[styles.successModal, { backgroundColor: "red" }]}>
+          {" "}
+          Goal couldn't be deleted
+        </Text>
+      )}
       <ScrollView>
         {/*     <Text>GoalDetailsScreen</Text> */}
         <TextInput
@@ -384,7 +454,7 @@ const GoalDetailsScreen = ({ route, navigation, setReloadHome }) => {
   );
 };
 
-const GoalDetailsNav = ({ saveGoal, deleteGoal }) => {
+const GoalDetailsNav = ({ saveGoal, deleteGoal, loader, navigation }) => {
   return (
     <View
       style={{
@@ -394,24 +464,41 @@ const GoalDetailsNav = ({ saveGoal, deleteGoal }) => {
         marginBottom: 20,
       }}
     >
-      <AntDesign name="left" size={24} color="white" />
+      <AntDesign
+        name="left"
+        size={24}
+        color="white"
+        onPress={() => {
+          navigation.goBack();
+        }}
+      />
       <Text style={{ fontSize: 20, fontWeight: 600, color: "white" }}>
         Goal Details
       </Text>
       <View style={{ flexDirection: "row" }}>
-        <AntDesign
-          color="white"
-          style={{ marginRight: 9 }}
-          name="save"
-          size={24}
-          onPress={saveGoal}
-        />
-        <Ionicons
-          name="trash-bin-sharp"
-          size={24}
-          color="white"
-          onPress={deleteGoal}
-        />
+        {loader ? (
+          <ActivityIndicator
+            style={{ marginLeft: 40 }}
+            size="large"
+            color="#0000ff"
+          />
+        ) : (
+          <AntDesign
+            color="white"
+            style={{ marginRight: 9 }}
+            name="save"
+            size={24}
+            onPress={saveGoal}
+          />
+        )}
+        {
+          <Ionicons
+            name="trash-bin-sharp"
+            size={24}
+            color="white"
+            onPress={deleteGoal}
+          />
+        }
       </View>
     </View>
   );
@@ -456,5 +543,19 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     paddingRight: 50,
+  },
+  successModal: {
+    backgroundColor: "green",
+
+    color: "white",
+    position: "absolute",
+    zIndex: 1,
+    top: 60,
+    right: 0,
+    left: 0,
+
+    textAlign: "center",
+    fontSize: 24,
+    fontStyle: "italic",
   },
 });

@@ -16,7 +16,7 @@ import { AntDesign } from "@expo/vector-icons";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { Octicons } from "@expo/vector-icons";
 
-const CreateGoalScreen = ({ route, setReloadHome }) => {
+const CreateGoalScreen = ({ route, setReloadHome, navigation }) => {
   const [loader, setLoader] = useState(false);
   const [isSuccessModal, setIsSuccessModal] = useState(false);
   const [isErrorModal, setIsErrorModal] = useState(false);
@@ -106,6 +106,7 @@ const CreateGoalScreen = ({ route, setReloadHome }) => {
         progress: 0,
         author: decodedUserId,
         progress: 0,
+        completed: false,
       }),
     })
       .then((res) => {
@@ -130,7 +131,11 @@ const CreateGoalScreen = ({ route, setReloadHome }) => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <GoalScreenNav loader={loader} setLoader={setLoader} />
+      <GoalScreenNav
+        loader={loader}
+        setLoader={setLoader}
+        navigation={navigation}
+      />
       {isSuccessModal && (
         <Text style={styles.successModal}> Goal Is Created </Text>
       )}
@@ -391,10 +396,17 @@ const CreateGoalScreen = ({ route, setReloadHome }) => {
 
 export default CreateGoalScreen;
 
-const GoalScreenNav = ({ loader, setLoader }) => {
+const GoalScreenNav = ({ loader, navigation }) => {
   return (
     <View style={styles.nav}>
-      <AntDesign name="left" size={24} color="white" />
+      <AntDesign
+        name="left"
+        size={24}
+        color="white"
+        onPress={() => {
+          navigation.goBack();
+        }}
+      />
       <Text style={styles.navText}>Create a new goal</Text>
       {loader && (
         <ActivityIndicator

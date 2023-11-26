@@ -95,7 +95,7 @@ const ProgressScreen = ({ route, navigation }) => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <ProgressScreenNav />
+      <ProgressScreenNav navigation={navigation} />
       <ScrollView style={{}}>
         <View style={styles.chart}>
           <View style={styles.chartNav}>
@@ -203,6 +203,17 @@ const ProgressScreen = ({ route, navigation }) => {
               date.getFullYear();
             // console.log(formattedDate); // Outputs: 11/12/2023
 
+            let borderColor;
+            if (item.completed) {
+              borderColor = "#81FF9D";
+            } else if (item.onHold) {
+              borderColor = "#FF6086";
+            } else if (item.notStarted) {
+              borderColor = "#CEAFED";
+            } else {
+              borderColor = "#4845FF"; // default color
+            }
+
             return (
               <Pressable
                 onPress={() =>
@@ -219,13 +230,7 @@ const ProgressScreen = ({ route, navigation }) => {
                   style={{
                     borderLeftWidth: 3,
                     borderLeftStyle: "solid",
-                    borderLeftColor: item.notStarted ? "#CEAFED" : "",
-                    borderLeftColor: item.completed ? "#81FF9D" : "",
-                    borderLeftColor: item.onHold ? "#FF6086" : "",
-                    borderLeftColor:
-                      !item.onHold && !item.completed && !item.notStarted
-                        ? "#625FFA"
-                        : "",
+                    borderLeftColor: borderColor,
                     paddingLeft: 13,
                   }}
                 >
@@ -247,10 +252,17 @@ const ProgressScreen = ({ route, navigation }) => {
 
 export default ProgressScreen;
 
-const ProgressScreenNav = () => {
+const ProgressScreenNav = ({ navigation }) => {
   return (
     <View style={styles.nav}>
-      <AntDesign name="left" size={24} color="white" />
+      <AntDesign
+        name="left"
+        size={24}
+        onPress={() => {
+          navigation.goBack();
+        }}
+        color="white"
+      />
       <Text style={styles.navText}>Progress</Text>
     </View>
   );

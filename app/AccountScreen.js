@@ -39,23 +39,7 @@ const AccountScreen = ({
   //removeValue();
   return (
     <View style={styles.container}>
-      <Text onPress={logOut} style={{ color: "white" }}>
-        Logout!{" "}
-      </Text>
-
-      <View style={styles.container}>
-        <Button title="Toggle Modal" onPress={toggleModal} />
-        <Modal
-          animationType="slide"
-          transparent={true}
-          visible={modalVisible}
-          onRequestClose={toggleModal}
-        >
-          <View style={styles.centeredView}>
-            <ActivityIndicator size="large" color="#0000ff" />
-          </View>
-        </Modal>
-      </View>
+      <Button title=" Logout!" onPress={logOut} />
     </View>
   );
 };
@@ -68,6 +52,9 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
     marginTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
+
+    justifyContent: "center",
+    alignItems: "center",
   },
 
   centeredView: {

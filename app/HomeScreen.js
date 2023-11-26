@@ -8,6 +8,8 @@ import {
   View,
   RefreshControl,
   Button,
+  Modal,
+  ActivityIndicator,
 } from "react-native";
 import React, { useState, useEffect } from "react";
 import Nav from "./components/Nav";
@@ -96,7 +98,21 @@ const HomeApp = ({ navigation, reloadHome, setReloadHome }) => {
     }
   }, [reloadHome]);
 
-  if (isLoading || isRefreshing) return <Text>loading</Text>;
+  if (isLoading || isRefreshing)
+    return (
+      <View style={styles.container}>
+        <Modal
+          animationType="slide"
+          transparent={true}
+          visible={true}
+          // onRequestClose={toggleModal}
+        >
+          <View style={styles.centeredView}>
+            <ActivityIndicator size="large" color="#0000ff" />
+          </View>
+        </Modal>
+      </View>
+    );
 
   if (error) return <Text>errnnors:jjs,,,{error.message}</Text>;
 
@@ -128,15 +144,18 @@ const HomeApp = ({ navigation, reloadHome, setReloadHome }) => {
     completedNum: completdNum.length,
     inProgressNum: inProgressNum.length,
   };
-  console.log;
+  //  console.log;
 
-  console.log({ userData });
-  console.log({ data });
+  let exceededGoal = userData.filter(
+    (item) => item.endDate < new Date().toISOString() && !item.completed
+  );
+
+  console.log(exceededGoal.length);
 
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.nav}>
-        <Nav refetch={refetch} />
+        <Nav exceededGoal={exceededGoal} />
       </View>
       <ScrollView>
         <View style={{ marginTop: 33 }}>
@@ -598,5 +617,12 @@ const styles = StyleSheet.create({
     borderRadius: 50,
     minHeight: 60,
     paddingTop: 5,
+  },
+  centeredView: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    marginTop: 22,
+    backgroundColor: "rgba(0,0,0,0.4)",
   },
 });
