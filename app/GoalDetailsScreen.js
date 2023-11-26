@@ -15,7 +15,7 @@ import { Ionicons } from "@expo/vector-icons";
 
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
-const GoalDetailsScreen = ({ route, navigation }) => {
+const GoalDetailsScreen = ({ route, navigation, setReloadHome }) => {
   const { item, userData } = route.params;
   const [title, setTitle] = useState(item.title);
   const [description, setDescription] = useState(item.description);
@@ -25,6 +25,7 @@ const GoalDetailsScreen = ({ route, navigation }) => {
   const [completed, setCompleted] = useState(item.completed);
   const [tag, setTag] = useState(item.tags);
   const [onHold, setOnHold] = useState(item.onHold);
+  //console.log(item.progress);
 
   let colors = ["#FF003D", "#431571", "#FF7A00"];
 
@@ -33,7 +34,7 @@ const GoalDetailsScreen = ({ route, navigation }) => {
 
   let progress = (prog.length / subgoals.length) * 100;
 
-  let progressPercentage = Math.floor(progress);
+  let progressPercentage = progress ? Math.floor(progress) : 0;
 
   if (completed == true) {
     progressPercentage = 100;
@@ -92,9 +93,11 @@ const GoalDetailsScreen = ({ route, navigation }) => {
       })
       .then((data) => {
         console.log(data);
+        setReloadHome(true);
       })
       .catch((err) => console.log(err));
   };
+  console.log({ progressPercentage });
 
   let startDateFormat = new Date(startDate);
   let formattedStartDate =

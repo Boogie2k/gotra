@@ -7,6 +7,7 @@ import {
   View,
   Button,
   TouchableHighlight,
+  ActivityIndicator,
 } from "react-native";
 import React, { useState, useEffect } from "react";
 import { Platform } from "react-native";
@@ -15,7 +16,11 @@ import { AntDesign } from "@expo/vector-icons";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { Octicons } from "@expo/vector-icons";
 
-const CreateGoalScreen = ({ route }) => {
+const CreateGoalScreen = ({ route, setReloadHome }) => {
+  const [loader, setLoader] = useState(false);
+  const [isSuccessModal, setIsSuccessModal] = useState(false);
+  const [isErrorModal, setIsErrorModal] = useState(false);
+
   const newDate = new Date();
   let currentDay = String(newDate.getDate()).padStart(2, "0");
   let currentMonth = String(newDate.getMonth() + 1).padStart(2, "0");
@@ -52,6 +57,21 @@ const CreateGoalScreen = ({ route }) => {
     setTagColors(colors);
   }, [newTag]);
 
+  useEffect(() => {
+    if (isSuccessModal) {
+      setTimeout(() => {
+        setIsSuccessModal(false);
+      }, 2000);
+    }
+    return () => {
+      if (isErrorModal) {
+        setTimeout(() => {
+          setIsErrorModal(false);
+        }, 2000);
+      }
+    };
+  }, [isSuccessModal, isErrorModal]);
+
   const removeTag = (index) => {
     const updatedTags = [...newTag];
     updatedTags.splice(index, 1);
@@ -68,6 +88,8 @@ const CreateGoalScreen = ({ route }) => {
 
   console.log(`${currentMonth}-${currentDay}-${currentYear}`);
   const saveGoal = () => {
+    setLoader(true);
+
     fetch(`https://gotra-api-inh9.onrender.com/api/v1/goal/`, {
       method: "POST",
       headers: {
@@ -95,13 +117,29 @@ const CreateGoalScreen = ({ route }) => {
       })
       .then((data) => {
         console.log(data);
+        setReloadHome(true);
+        setLoader(false);
+        setIsSuccessModal(true);
       })
-      .catch((err) => console.log(err));
+      .catch((err) => {
+        console.log(err);
+        setLoader(false);
+        setIsErrorModal(true);
+      });
   };
 
   return (
     <SafeAreaView style={styles.container}>
-      <GoalScreenNav />
+      <GoalScreenNav loader={loader} setLoader={setLoader} />
+      {isSuccessModal && (
+        <Text style={styles.successModal}> Goal Is Created </Text>
+      )}
+      {isErrorModal && (
+        <Text style={[styles.successModal, { backgroundColor: "red" }]}>
+          {" "}
+          Goal couldn't be created{" "}
+        </Text>
+      )}
 
       <ScrollView keyboardShouldPersistTaps="handled">
         <View style={{ marginTop: 15 }}>
@@ -192,7 +230,10 @@ const CreateGoalScreen = ({ route }) => {
                 color="white"
                 onPress={() => {
                   if (subgoalText !== "") {
-                    setSubgoals([...subgoals, { subgoals_text: subgoalText }]);
+                    setSubgoals([
+                      ...subgoals,
+                      { subgoals_text: subgoalText, isCompleted: false },
+                    ]);
                   }
 
                   console.log(tag);
@@ -350,61 +391,19 @@ const CreateGoalScreen = ({ route }) => {
 
 export default CreateGoalScreen;
 
-const GoalScreenNav = () => {
+const GoalScreenNav = ({ loader, setLoader }) => {
   return (
     <View style={styles.nav}>
       <AntDesign name="left" size={24} color="white" />
       <Text style={styles.navText}>Create a new goal</Text>
+      {loader && (
+        <ActivityIndicator
+          style={{ marginLeft: 40 }}
+          size="large"
+          color="#0000ff"
+        />
+      )}
     </View>
-  );
-};
-
-function TestAppWithComponent() {
-  const [date, setDate] = useState(new Date());
-  return (
-    <>
-      <DateTimePicker
-        value={new Date(0)}
-        onChange={(evt, selectedDate) => {
-          setDate(selectedDate);
-        }}
-      />
-      <Text style={{ color: "white" }}>{String(date?.toLocaleString())}</Text>
-      <Text style={{ color: "white" }}>
-        {String((date?.getTime() ?? 0) / 1000)}
-      </Text>
-    </>
-  );
-}
-
-const AppWithImperativePicker = () => {
-  const [date, setDate] = useState(new Date());
-
-  const onChange = (event, selectedDate) => {
-    selectedDate && setDate(selectedDate);
-  };
-
-  const showMode = (currentMode) => {
-    DateTimePicker.open({
-      value: date,
-      onChange,
-      display: "default",
-      mode: currentMode,
-      is24Hour: true,
-    });
-  };
-
-  const showDatepicker = () => {
-    showMode("date");
-  };
-
-  const time = date?.getTime();
-  return (
-    <>
-      <Button onPress={showDatepicker} title="Show date picker!" />
-      {/* <Text>selected: {date.toLocaleString()}</Text>}
-      {/*<Text>{String(time)}</Text>*/}
-    </>
   );
 };
 
@@ -419,8 +418,24 @@ const styles = StyleSheet.create({
     paddingBottom: 20,
   },
 
+  successModal: {
+    backgroundColor: "green",
+
+    color: "white",
+    position: "absolute",
+    zIndex: 1,
+    top: 60,
+    right: 0,
+    left: 0,
+
+    textAlign: "center",
+    fontSize: 24,
+    fontStyle: "italic",
+  },
+
   nav: {
     flexDirection: "row",
+    paddingBottom: 20,
   },
   navText: {
     color: "white",

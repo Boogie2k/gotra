@@ -20,7 +20,7 @@ import {
   StackedBarChart,
 } from "react-native-chart-kit";
 
-const ProgressScreen = ({ route }) => {
+const ProgressScreen = ({ route, navigation }) => {
   const screenWidth = Dimensions.get("window").width;
   const screenHeight = Dimensions.get("window").height;
 
@@ -44,80 +44,78 @@ const ProgressScreen = ({ route }) => {
   const on_hold_num =
     userData && userData.filter((item) => item.onHold == true);
 
-  let progressProps = {
-    not_startedNum: not_startedNum.length,
-    completedNum: completdNum.length,
-    inProgressNum: inProgressNum.length,
-  };
-
   const [firstHalf, setFirstHalf] = useState(true);
 
   const labels = firstHalf
     ? ["Jan", "Feb", "Mar", "Apr", "May", "Jun"]
     : ["Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
-  const datas = {
-    labels: ["January", "February", "March", "April", "May", "June"],
-    datasets: [
-      {
-        data: [20, 45, 28, 80, 99, 43],
-        color: (opacity = 1) => `rgba(134, 65, 244, ${opacity})`, // optional
-        strokeWidth: 2, // optional
-      },
-    ],
-    legend: ["Rainy Days"], // optional
-  };
   let counts = Array(12).fill(0);
+  let countsForNotStarted = Array(12).fill(0);
+  let countsForOnHold = Array(12).fill(0);
+  let countsForInProgress = Array(12).fill(0);
+  let countsForCompleted = Array(12).fill(0);
 
-  not_startedNum.forEach((item) => {
+  on_hold_num.forEach((item) => {
     let date = new Date(item.updatedAt);
     let month = date.getMonth(); // Months are zero-based
-    counts[month]++;
+    countsForOnHold[month]++;
   });
   let slicedCountsForOnHold = firstHalf
-    ? counts.slice(0, 6)
-    : counts.slice(6, 12);
+    ? countsForOnHold.slice(0, 6)
+    : countsForOnHold.slice(6, 12);
 
   completdNum.forEach((item) => {
     let date = new Date(item.updatedAt);
     let month = date.getMonth(); // Months are zero-based
-    counts[month]++;
+    countsForCompleted[month]++;
   });
   let slicedCountsForcompleted = firstHalf
-    ? counts.slice(0, 6)
-    : counts.slice(6, 12);
+    ? countsForCompleted.slice(0, 6)
+    : countsForCompleted.slice(6, 12);
 
   not_startedNum.forEach((item) => {
     let date = new Date(item.updatedAt);
     let month = date.getMonth(); // Months are zero-based
-    counts[month]++;
+    countsForNotStarted[month]++;
+    console.log(month);
   });
   let slicedCountsForNotStarted = firstHalf
-    ? counts.slice(0, 6)
-    : counts.slice(6, 12);
+    ? countsForNotStarted.slice(0, 6)
+    : countsForNotStarted.slice(6, 12);
 
   inProgressNum.forEach((item) => {
     let date = new Date(item.updatedAt);
     let month = date.getMonth(); // Months are zero-based
-    counts[month]++;
+    countsForInProgress[month]++;
   });
   let slicedCountsForInProgress = firstHalf
-    ? counts.slice(0, 6)
-    : counts.slice(6, 12);
+    ? countsForInProgress.slice(0, 6)
+    : countsForInProgress.slice(6, 12);
 
   return (
     <SafeAreaView style={styles.container}>
       <ProgressScreenNav />
       <ScrollView style={{}}>
         <View style={styles.chart}>
-          <Text
-            onPress={() => {
-              setFirstHalf(!firstHalf);
-            }}
-            style={{ color: "white" }}
-          >
-            Next
-          </Text>
+          <View style={styles.chartNav}>
+            <AntDesign
+              onPress={() => {
+                setFirstHalf(true);
+              }}
+              name="left"
+              size={24}
+              color="white"
+            />
+            <AntDesign
+              onPress={() => {
+                setFirstHalf(false);
+              }}
+              name="right"
+              size={24}
+              color="white"
+            />
+          </View>
           <LineChart
             data={{
               labels: labels,
@@ -143,7 +141,7 @@ const ProgressScreen = ({ route }) => {
                   strokeWidth: 2, // optional
                 },
               ],
-              legend: ["Rainy Days"], // optional
+              //   legend: ["Rainy Days"], // optional
             }}
             width={screenWidth}
             height={screenHeight / 2.5}
@@ -170,6 +168,17 @@ const ProgressScreen = ({ route }) => {
               borderRadius: 16,
             }}
           />
+
+          <View style={styles.ballDetails}>
+            <View style={styles.ball}></View>
+            <Text style={styles.ballText}>In Progress</Text>
+            <View style={[styles.ball, { backgroundColor: "#FF6086" }]}></View>
+            <Text style={styles.ballText}>On hold</Text>
+            <View style={[styles.ball, { backgroundColor: "#81FF9D" }]}></View>
+            <Text style={styles.ballText}>Completed</Text>
+            <View style={[styles.ball, { backgroundColor: "#CEAFED" }]}></View>
+            <Text style={styles.ballText}>Not Started</Text>
+          </View>
         </View>
         <View
           style={{
@@ -210,7 +219,13 @@ const ProgressScreen = ({ route }) => {
                   style={{
                     borderLeftWidth: 3,
                     borderLeftStyle: "solid",
-                    borderLeftColor: "#CEAFED",
+                    borderLeftColor: item.notStarted ? "#CEAFED" : "",
+                    borderLeftColor: item.completed ? "#81FF9D" : "",
+                    borderLeftColor: item.onHold ? "#FF6086" : "",
+                    borderLeftColor:
+                      !item.onHold && !item.completed && !item.notStarted
+                        ? "#625FFA"
+                        : "",
                     paddingLeft: 13,
                   }}
                 >
@@ -219,7 +234,7 @@ const ProgressScreen = ({ route }) => {
                 </View>
 
                 <View style={styles.progressView}>
-                  <Text style={styles.progress}>0%</Text>
+                  <Text style={styles.progress}>{item.progress}%</Text>
                 </View>
               </Pressable>
             );
@@ -266,6 +281,12 @@ const styles = StyleSheet.create({
     minHeight: 438,
     //   width: 299,
     //  backgroundColor: "red",
+    backgroundColor: "#161313",
+    borderRadius: 15,
+    justifyContent: "center",
+
+    alignItems: "center",
+    position: "relative",
   },
 
   view: {
@@ -355,5 +376,36 @@ const styles = StyleSheet.create({
     fontWeight: 400,
 
     opacity: 0.75,
+  },
+  ballDetails: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
+
+  ball: {
+    backgroundColor: "#625FFA",
+    width: 10,
+    height: 10,
+    borderRadius: 50,
+    marginRight: 5,
+  },
+
+  ballText: {
+    color: "white",
+    fontSize: 10,
+    fontWeight: 400,
+    marginRight: 10,
+  },
+  chartNav: {
+    flexDirection: "row",
+    textAlign: "right",
+
+    position: "absolute",
+    top: 0,
+    right: 0,
+
+    width: 70,
+    justifyContent: "space-between",
+    //width:'
   },
 });

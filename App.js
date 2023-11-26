@@ -19,6 +19,7 @@ export default function App() {
   const [loginVal, setLoginval] = useState("");
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isLoggedout, setIsLoggedOut] = useState(false);
+  const [reloadHome, setReloadHome] = useState(false);
 
   const getData = async () => {
     try {
@@ -62,7 +63,13 @@ export default function App() {
               title: "",
             }}
           >
-            {(props) => <HomeScreen {...props} />}
+            {(props) => (
+              <HomeScreen
+                {...props}
+                reloadHome={reloadHome}
+                setReloadHome={setReloadHome}
+              />
+            )}
           </Stack.Screen>
         ) : (
           <Stack.Screen name="Login">
@@ -77,9 +84,23 @@ export default function App() {
         )}
 
         <Stack.Screen name="CreateGoal">
-          {(props) => <CreateGoalScreen {...props} />}
+          {(props) => (
+            <CreateGoalScreen
+              {...props}
+              reloadHome={reloadHome}
+              setReloadHome={setReloadHome}
+            />
+          )}
         </Stack.Screen>
-        <Stack.Screen name="GoalDetails" component={GoalDetailsScreen} />
+        <Stack.Screen name="GoalDetails">
+          {(props) => (
+            <GoalDetailsScreen
+              {...props}
+              reloadHome={reloadHome}
+              setReloadHome={setReloadHome}
+            />
+          )}
+        </Stack.Screen>
         <Stack.Screen name="ProgressScreen" component={ProgressScreen} />
         <Stack.Screen name="Register" component={RegisterScreen} />
         <Stack.Screen name="Account">

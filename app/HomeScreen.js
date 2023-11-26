@@ -7,6 +7,7 @@ import {
   TouchableHighlight,
   View,
   RefreshControl,
+  Button,
 } from "react-native";
 import React, { useState, useEffect } from "react";
 import Nav from "./components/Nav";
@@ -26,19 +27,19 @@ import { decode as atob, encode as btoa } from "base-64";
 
 const queryClient = new QueryClient();
 
-const wait = (timeout) => {
-  return new Promise((resolve) => setTimeout(resolve, timeout));
-};
-
-export function Home({ navigation }) {
+export function Home({ navigation, reloadHome, setReloadHome }) {
   return (
     <QueryClientProvider client={queryClient}>
-      <HomeApp navigation={navigation} />
+      <HomeApp
+        navigation={navigation}
+        reloadHome={reloadHome}
+        setReloadHome={setReloadHome}
+      />
     </QueryClientProvider>
   );
 }
 
-const HomeApp = ({ navigation }) => {
+const HomeApp = ({ navigation, reloadHome, setReloadHome }) => {
   /*
   useEffect(() => {
     createTable();
@@ -46,8 +47,10 @@ const HomeApp = ({ navigation }) => {
 */
 
   const [loginVal, setLoginVal] = useState("");
-  const [refreshing, setRefreshing] = React.useState(false);
-  const [enablePTR, setEnablePTR] = React.useState(false);
+  const [isList, setIsList] = React.useState(false);
+  const [isRefreshing, setIsRefreshing] = React.useState(false);
+
+  //const fetched = isRefreshing || "/api/v1/goal/";
 
   const getData = async () => {
     try {
@@ -78,7 +81,7 @@ const HomeApp = ({ navigation }) => {
   let decodedUser = loginVal && jwtDecode(loginVal);
   let decodedUserId = decodedUser && decodedUser.userId;
 
-  const { isLoading, error, data } = useQuery({
+  const { isLoading, error, data, refetch } = useQuery({
     queryKey: ["repoData"],
     queryFn: () =>
       fetch(`https://gotra-api-inh9.onrender.com/api/v1/goal/`).then((res) =>
@@ -86,7 +89,14 @@ const HomeApp = ({ navigation }) => {
       ),
   });
 
-  if (isLoading) return <Text>loading</Text>;
+  useEffect(() => {
+    if (reloadHome) {
+      refetch();
+      setReloadHome(false);
+    }
+  }, [reloadHome]);
+
+  if (isLoading || isRefreshing) return <Text>loading</Text>;
 
   if (error) return <Text>errnnors:jjs,,,{error.message}</Text>;
 
@@ -119,10 +129,14 @@ const HomeApp = ({ navigation }) => {
     inProgressNum: inProgressNum.length,
   };
   console.log;
+
+  console.log({ userData });
+  console.log({ data });
+
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.nav}>
-        <Nav />
+        <Nav refetch={refetch} />
       </View>
       <ScrollView>
         <View style={{ marginTop: 33 }}>
@@ -141,21 +155,26 @@ const HomeApp = ({ navigation }) => {
           >
             <Text
               onPress={() => {
-                userData =
-                  data &&
-                  data.filter((item) => {
-                    return item.author.some(
-                      (author) => author._id === decodedUserId
-                    );
-                  });
-
-                console.log("done");
+                setIsList(true);
               }}
-              style={styles.view}
+              style={[
+                styles.view,
+                { backgroundColor: isList ? "#3c3c3c" : "#4845FF" },
+              ]}
             >
-              lists
+              List View
             </Text>
-            <Text style={styles.view}>Boards</Text>
+            <Text
+              onPress={() => {
+                setIsList(false);
+              }}
+              style={[
+                styles.view,
+                { backgroundColor: isList ? "#4845ff" : "#3c3c3c" },
+              ]}
+            >
+              Board View
+            </Text>
           </View>
           <View style={styles.body}>
             <View style={styles.header}>
@@ -167,7 +186,7 @@ const HomeApp = ({ navigation }) => {
               horizontal={true}
               contentContainerStyle={{
                 display: "flex",
-                flexDirection: "row",
+                flexDirection: isList ? "column" : "row",
               }}
             >
               {not_startedNum.map((item) => {
@@ -221,9 +240,9 @@ const HomeApp = ({ navigation }) => {
 
             <ScrollView
               horizontal={true}
-              style={{
+              contentContainerStyle={{
                 display: "flex",
-                flexDirection: "row",
+                flexDirection: isList ? "column" : "row",
               }}
             >
               {on_hold_num.map((item) => {
@@ -272,9 +291,9 @@ const HomeApp = ({ navigation }) => {
 
             <ScrollView
               horizontal={true}
-              style={{
+              contentContainerStyle={{
                 display: "flex",
-                flexDirection: "row",
+                flexDirection: isList ? "column" : "row",
               }}
             >
               {completdNum.map((item) => {
@@ -327,7 +346,7 @@ const HomeApp = ({ navigation }) => {
               horizontal={true}
               contentContainerStyle={{
                 display: "flex",
-                flexDirection: "row",
+                flexDirection: isList ? "column" : "row",
               }}
             >
               {inProgressNum.map((item) => {
@@ -364,7 +383,9 @@ const HomeApp = ({ navigation }) => {
                     </View>
 
                     <View style={styles.progressView}>
-                      <Text style={styles.progress}>{item.progress}%</Text>
+                      <View style={styles.progressInnerView}>
+                        <Text style={styles.progress}>{item.progress}%</Text>
+                      </View>
                     </View>
                   </Pressable>
                 );
@@ -372,7 +393,6 @@ const HomeApp = ({ navigation }) => {
             </ScrollView>
           </View>
         </View>
-        <View></View>
       </ScrollView>
 
       <View style={styles.footer}>
@@ -419,10 +439,12 @@ const styles = StyleSheet.create({
     color: "white",
     backgroundColor: "#4845FF",
     borderRadius: 20,
-    paddingLeft: 51,
-    paddingRight: 51,
-    height: 33,
+    paddingLeft: 21,
+    paddingRight: 21,
+
+    minHeight: 33,
     paddingTop: 6,
+    paddingBottom: 6,
   },
 
   body: {
@@ -473,7 +495,11 @@ const styles = StyleSheet.create({
     fontSize: 17.04,
     fontWeight: 600,
     color: "white",
+
     marginBottom: 4,
+    //width: "5%",
+
+    width: 170,
   },
 
   start: {
@@ -493,6 +519,20 @@ const styles = StyleSheet.create({
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
+    // backgroundColor: "white",
+  },
+
+  progressInnerView: {
+    //width: 4,
+    // height: ,
+    borderRadius: 50,
+    //  borderWidth: 9,
+    borderColor: "#343434",
+    borderStyle: "solid",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    // backgroundColor: "red",
   },
 
   progress: {
@@ -502,6 +542,15 @@ const styles = StyleSheet.create({
     fontWeight: 400,
 
     opacity: 0.75,
+    //  width: 43,
+    // height: 43,
+    borderRadius: 20,
+    // backgroundColor: "red",
+    // justifyContent: "center",
+    //alignItems: "center",
+    //display: "flex",
+    //padding: 9,
+    //position: "relative",top:50
   },
 
   logo: {
