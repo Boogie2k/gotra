@@ -26,6 +26,7 @@ import { StatusBar } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { jwtDecode } from "jwt-decode";
 import { decode as atob, encode as btoa } from "base-64";
+import { LinearGradient } from "expo-linear-gradient";
 
 const queryClient = new QueryClient();
 
@@ -241,9 +242,17 @@ const HomeApp = ({ navigation, reloadHome, setReloadHome }) => {
                       <Text style={styles.start}>{formattedDate}</Text>
                     </View>
 
-                    <View style={styles.progressView}>
-                      <Text style={styles.progress}>{item.progress}%</Text>
-                    </View>
+                    <LinearGradient
+                      start={{ x: 0, y: 0 }}
+                      end={{ x: 1, y: 0 }}
+                      colors={["white", "#343434"]}
+                      locations={[item.progress / 100, item.progress / 100]} // This makes the first 30% of the gradient white
+                      style={styles.progressView}
+                    >
+                      <View style={styles.progressInnerView}>
+                        <Text style={styles.progress}>{item.progress}%</Text>
+                      </View>
+                    </LinearGradient>
                   </Pressable>
                 );
               })}
@@ -292,9 +301,17 @@ const HomeApp = ({ navigation, reloadHome, setReloadHome }) => {
                       <Text style={styles.start}>{formattedDate}</Text>
                     </View>
 
-                    <View style={styles.progressView}>
-                      <Text style={styles.progress}>{item.progress}%</Text>
-                    </View>
+                    <LinearGradient
+                      start={{ x: 0, y: 0 }}
+                      end={{ x: 1, y: 0 }}
+                      colors={["white", "#343434"]}
+                      locations={[item.progress / 100, item.progress / 100]} // This makes the first 30% of the gradient white
+                      style={styles.progressView}
+                    >
+                      <View style={styles.progressInnerView}>
+                        <Text style={styles.progress}>{item.progress}%</Text>
+                      </View>
+                    </LinearGradient>
                   </Pressable>
                 );
               })}
@@ -343,11 +360,17 @@ const HomeApp = ({ navigation, reloadHome, setReloadHome }) => {
                       <Text style={styles.start}>{formattedDate}</Text>
                     </View>
 
-                    <View style={styles.progressView}>
-                      <View style={{}}>
+                    <LinearGradient
+                      start={{ x: 0, y: 0 }}
+                      end={{ x: 1, y: 0 }}
+                      colors={["white", "#343434"]}
+                      locations={[item.progress / 100, item.progress / 100]} // This makes the first 30% of the gradient white
+                      style={styles.progressView}
+                    >
+                      <View style={styles.progressInnerView}>
                         <Text style={styles.progress}>{item.progress}%</Text>
                       </View>
-                    </View>
+                    </LinearGradient>
                   </Pressable>
                 );
               })}
@@ -401,11 +424,17 @@ const HomeApp = ({ navigation, reloadHome, setReloadHome }) => {
                       <Text style={styles.start}>{formattedDate}</Text>
                     </View>
 
-                    <View style={styles.progressView}>
+                    <LinearGradient
+                      start={{ x: 0, y: 0 }}
+                      end={{ x: 1, y: 0 }}
+                      colors={["white", "#343434"]}
+                      locations={[item.progress / 100, item.progress / 100]} // This makes the first 30% of the gradient white
+                      style={styles.progressView}
+                    >
                       <View style={styles.progressInnerView}>
                         <Text style={styles.progress}>{item.progress}%</Text>
                       </View>
-                    </View>
+                    </LinearGradient>
                   </Pressable>
                 );
               })}
@@ -529,29 +558,22 @@ const styles = StyleSheet.create({
   },
 
   progressView: {
-    width: 53,
-    height: 53,
-    borderRadius: 50,
-    borderWidth: 9,
-    borderColor: "#343434",
     borderStyle: "solid",
-    display: "flex",
-    justifyContent: "center",
+    height: 53,
+    width: 53,
+    borderRadius: 50, // Adjust this value to get the roundness you want
     alignItems: "center",
-    // backgroundColor: "white",
+    justifyContent: "center",
+    //overflow: "hidden",
   },
 
   progressInnerView: {
-    //width: 4,
-    // height: ,
+    backgroundColor: "#1E1E1E",
+    height: 43,
+    width: 43,
     borderRadius: 50,
-    //  borderWidth: 9,
-    borderColor: "#343434",
-    borderStyle: "solid",
-    display: "flex",
-    justifyContent: "center",
     alignItems: "center",
-    // backgroundColor: "red",
+    justifyContent: "center",
   },
 
   progress: {

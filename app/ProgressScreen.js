@@ -19,6 +19,7 @@ import {
   ContributionGraph,
   StackedBarChart,
 } from "react-native-chart-kit";
+import { LinearGradient } from "expo-linear-gradient";
 
 const ProgressScreen = ({ route, navigation }) => {
   const screenWidth = Dimensions.get("window").width;
@@ -238,9 +239,17 @@ const ProgressScreen = ({ route, navigation }) => {
                   <Text style={styles.start}>{formattedDate}</Text>
                 </View>
 
-                <View style={styles.progressView}>
-                  <Text style={styles.progress}>{item.progress}%</Text>
-                </View>
+                <LinearGradient
+                  start={{ x: 0, y: 0 }}
+                  end={{ x: 1, y: 0 }}
+                  colors={["white", "#343434"]}
+                  locations={[item.progress / 100, item.progress / 100]} // This makes the first 30% of the gradient white
+                  style={styles.progressView}
+                >
+                  <View style={styles.progressInnerView}>
+                    <Text style={styles.progress}>{item.progress}%</Text>
+                  </View>
+                </LinearGradient>
               </Pressable>
             );
           })}
@@ -280,6 +289,7 @@ const styles = StyleSheet.create({
 
   nav: {
     flexDirection: "row",
+    paddingBottom: 9,
   },
   navText: {
     color: "white",
@@ -360,6 +370,7 @@ const styles = StyleSheet.create({
     fontWeight: 600,
     color: "white",
     marginBottom: 4,
+    width: 170,
   },
 
   start: {
@@ -370,15 +381,22 @@ const styles = StyleSheet.create({
   },
 
   progressView: {
-    width: 53,
-    height: 53,
-    borderRadius: 50,
-    borderWidth: 9,
-    borderColor: "#343434",
     borderStyle: "solid",
-    display: "flex",
-    justifyContent: "center",
+    height: 53,
+    width: 53,
+    borderRadius: 50, // Adjust this value to get the roundness you want
     alignItems: "center",
+    justifyContent: "center",
+    //overflow: "hidden",
+  },
+
+  progressInnerView: {
+    backgroundColor: "#1E1E1E",
+    height: 43,
+    width: 43,
+    borderRadius: 50,
+    alignItems: "center",
+    justifyContent: "center",
   },
 
   progress: {
