@@ -64,14 +64,14 @@ const RegisterScreen = ({ navigation }) => {
         <Text style={styles.login}>Create my Account</Text>
 
         <View style={styles.form}>
-          <Text style={styles.titles}>Full Name</Text>
+          <Text style={styles.titles}>Username</Text>
           <TextInput
             value={username}
             onChangeText={(newText) => {
               setUsername(newText);
             }}
             style={styles.inputs}
-            placeholder="Fullnme"
+            placeholder="Username"
           />
           <Text style={styles.titles}>Your Email</Text>
           <TextInput
@@ -156,11 +156,11 @@ const styles = StyleSheet.create({
     fontWeight: 600,
     color: "#fff",
     marginLeft: 20,
-    marginTop: 90,
+    marginTop: 15,
   },
   form: {
     marginLeft: 20,
-    marginTop: 40,
+    marginTop: 20,
   },
   titles: { fontWeight: 500, fontSize: 20, color: "#fff", marginTop: 5 },
   inputs: {

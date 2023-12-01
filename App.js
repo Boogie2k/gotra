@@ -30,11 +30,11 @@ export default function App() {
         // value previously stored
         //  console.log(loginVal);
       } else {
-        console.log("emp");
+        //console.log("emp");
       }
     } catch (e) {
       // error reading value
-      console.log("err");
+      //console.log("err");
     }
   };
 
@@ -47,7 +47,7 @@ export default function App() {
       // remove error
     }
 
-    console.log("Done.");
+    // console.log("Done.");
   };
 
   //removeValue();

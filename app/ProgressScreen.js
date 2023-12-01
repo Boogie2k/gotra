@@ -193,7 +193,7 @@ const ProgressScreen = ({ route, navigation }) => {
             borderLeftColor: "#4845FF",
           }}
         >
-          {data.map((item) => {
+          {userData.map((item) => {
             //    console.log(item);
             let date = new Date(item.updatedAt);
             let formattedDate =

@@ -53,6 +53,10 @@ const LoginScreen = ({ navigation, isLoggedIn, setIsLoggedIn }) => {
   }
 
   const loginFunc = () => {
+    if (!email || !password) {
+      alert("credentials can not be empty");
+    }
+
     fetch("https://gotra-api-inh9.onrender.com/api/v1/login/", {
       method: "POST",
       headers: {
@@ -63,6 +67,7 @@ const LoginScreen = ({ navigation, isLoggedIn, setIsLoggedIn }) => {
       .then((res) => {
         if (!res.ok) {
           throw new Error(`HTTP error! status: ${res.status}`);
+          console.log("errrrd");
         }
         return res.json();
       })
@@ -77,10 +82,14 @@ const LoginScreen = ({ navigation, isLoggedIn, setIsLoggedIn }) => {
           setIsLoggedIn(!isLoggedIn);
           //user && console.log(user);
           // console.log(user);
-        }
+        } 
         // navigation.navigate("Home", { name: "HomePge" });
+        console.log(data);
       })
-      .catch((err) => console.log(err));
+      .catch((err) => {
+        console.log(err);
+        alert("err");
+      });
   };
   return (
     <SafeAreaView style={styles.container}>

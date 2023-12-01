@@ -104,44 +104,50 @@ const GoalDetailsScreen = ({ route, setReloadHome, navigation }) => {
       });
   };
   const saveGoal = () => {
-    setLoader(true);
-    fetch(`https://gotra-api-inh9.onrender.com/api/v1/goal/${item._id}/`, {
-      method: "PATCH",
-      headers: {
-        "content-type": "application/json",
-      },
-      body: JSON.stringify({
-        title,
-        description,
-        startDate: startDate,
-        endDate: endDate,
-        subgoals,
-        tags: tag,
-        onHold: onHold,
-        completed,
-        notStarted: false,
-        progress: progressPercentage,
-      }),
-    })
-      .then((res) => {
-        if (!res.ok) {
-          // throw new Error(`${res}`);
-          console.log(res);
-        }
-        return res.json();
+    if (!title) {
+      alert("title can not be empty");
+    } else if (!description) {
+      alert("title cannot be empty");
+    } else {
+      setLoader(true);
+      fetch(`https://gotra-api-inh9.onrender.com/api/v1/goal/${item._id}/`, {
+        method: "PATCH",
+        headers: {
+          "content-type": "application/json",
+        },
+        body: JSON.stringify({
+          title,
+          description,
+          startDate: startDate,
+          endDate: endDate,
+          subgoals,
+          tags: tag,
+          onHold: onHold,
+          completed,
+          notStarted: false,
+          progress: progressPercentage,
+        }),
       })
-      .then((data) => {
-        console.log(data);
-        setReloadHome(true);
-        setLoader(false);
+        .then((res) => {
+          if (!res.ok) {
+            // throw new Error(`${res}`);
+            console.log(res);
+          }
+          return res.json();
+        })
+        .then((data) => {
+          console.log(data);
+          setReloadHome(true);
+          setLoader(false);
 
-        saveModalSuccess();
-      })
-      .catch((err) => {
-        console.log(err);
-        setLoader(false);
-        saveModalError();
-      });
+          saveModalSuccess();
+        })
+        .catch((err) => {
+          console.log(err);
+          setLoader(false);
+          saveModalError();
+        });
+    }
   };
   console.log({ progressPercentage });
 

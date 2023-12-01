@@ -199,7 +199,14 @@ const HomeApp = ({ navigation, reloadHome, setReloadHome }) => {
           <View style={styles.body}>
             <View style={styles.header}>
               <Text style={styles.headText}>Not started</Text>
-              <Text style={styles.see}>See all</Text>
+              <Text
+                onPress={() =>
+                  navigation.navigate("ProgressScreen", { data, userData })
+                }
+                style={styles.see}
+              >
+                See all
+              </Text>
             </View>
 
             <ScrollView
@@ -263,7 +270,14 @@ const HomeApp = ({ navigation, reloadHome, setReloadHome }) => {
               <Text style={[styles.headText, { color: "#ce275f" }]}>
                 On hold
               </Text>
-              <Text style={styles.see}>See all</Text>
+              <Text
+                onPress={() =>
+                  navigation.navigate("ProgressScreen", { data, userData })
+                }
+                style={styles.see}
+              >
+                See all
+              </Text>
             </View>
 
             <ScrollView
@@ -322,7 +336,14 @@ const HomeApp = ({ navigation, reloadHome, setReloadHome }) => {
               <Text style={[styles.headText, { color: "#82FF9D" }]}>
                 Completed
               </Text>
-              <Text style={styles.see}>See all</Text>
+              <Text
+                onPress={() =>
+                  navigation.navigate("ProgressScreen", { data, userData })
+                }
+                style={styles.see}
+              >
+                See all
+              </Text>
             </View>
 
             <ScrollView
@@ -381,7 +402,14 @@ const HomeApp = ({ navigation, reloadHome, setReloadHome }) => {
               <Text style={[styles.headText, { color: `rgb(	98, 95, 250)` }]}>
                 In Progress
               </Text>
-              <Text style={styles.see}>See all</Text>
+              <Text
+                onPress={() =>
+                  navigation.navigate("ProgressScreen", { data, userData })
+                }
+                style={styles.see}
+              >
+                See all
+              </Text>
             </View>
 
             <ScrollView

@@ -20,15 +20,29 @@ const CreateGoalScreen = ({ route, setReloadHome, navigation }) => {
   const [loader, setLoader] = useState(false);
   const [isSuccessModal, setIsSuccessModal] = useState(false);
   const [isErrorModal, setIsErrorModal] = useState(false);
+  const [showDate, setShowDate] = useState(false);
+  const [mode, setMode] = useState("date");
+  const [showStartDate, setShowStartDate] = useState(false);
+  const [startmode, setStartMode] = useState("date");
+  const [newEndDate, setNewEndDate] = useState(new Date());
+  const [newStartDate, setNewStartDate] = useState(new Date());
 
-  const newDate = new Date();
-  let currentDay = String(newDate.getDate()).padStart(2, "0");
-  let currentMonth = String(newDate.getMonth() + 1).padStart(2, "0");
-  let currentYear = newDate.getFullYear();
+  let currentStartDay = String(newStartDate.getDate()).padStart(2, "0");
+  let currentStartMonth = String(newStartDate.getMonth() + 1).padStart(2, "0");
+  let currentStartYear = newStartDate.getFullYear();
 
   // we will display the date as DD-MM-YYYY
 
-  let currentDate = `${currentDay}-${currentMonth}-${currentYear}`;
+  let currentStartDate = `${currentStartMonth}-${currentStartDay}-${currentStartYear}`;
+  let initialStartDate = `${currentStartDay}-${currentStartMonth}-${currentStartYear}`;
+
+  let currentDay = String(newEndDate.getDate()).padStart(2, "0");
+  let currentMonth = String(newEndDate.getMonth() + 1).padStart(2, "0");
+  let currentYear = newEndDate.getFullYear();
+
+  // we will display the date as DD-MM-YYYY
+
+  let currentDate = `${currentMonth}-${currentDay}-${currentYear}`;
   let initialDate = `${currentMonth}-${currentDay}-${currentYear}`;
 
   const { decodedUserId } = route.params;
@@ -38,8 +52,7 @@ const CreateGoalScreen = ({ route, setReloadHome, navigation }) => {
   const [subgoalText, setSubgoalText] = useState("");
   const [tag, setTag] = useState("");
   const [newTag, setNewTag] = useState([]);
-  const [startDate, setStartDate] = useState(initialDate);
-  const [endDate, setEndDate] = useState(initialDate);
+
   // Date object
 
   // console.log("The current date is " + currentDate);
@@ -88,47 +101,73 @@ const CreateGoalScreen = ({ route, setReloadHome, navigation }) => {
 
   console.log(`${currentMonth}-${currentDay}-${currentYear}`);
   const saveGoal = () => {
-    setLoader(true);
+    if (!title) {
+      alert("title cannot be empty");
+    } else if (!description) {
+      alert("description cannot be empty");
+    } else if (title && description) {
+      setLoader(true);
 
-    fetch(`https://gotra-api-inh9.onrender.com/api/v1/goal/`, {
-      method: "POST",
-      headers: {
-        "content-type": "application/json",
-      },
-      body: JSON.stringify({
-        title: title,
-        description: description,
-        tags: newTag,
-        subgoals: subgoals,
-        startDate,
-        endDate,
-        notStarted: true,
-        progress: 0,
-        author: decodedUserId,
-        progress: 0,
-        completed: false,
-      }),
-    })
-      .then((res) => {
-        if (!res.ok) {
-          // throw new Error(`${res}`);
-          console.log(res);
-        }
-        return res.json();
+      fetch(`https://gotra-api-inh9.onrender.com/api/v1/goal/`, {
+        method: "POST",
+        headers: {
+          "content-type": "application/json",
+        },
+        body: JSON.stringify({
+          title: title,
+          description: description,
+          tags: newTag,
+          subgoals: subgoals,
+          startDate: currentStartDate,
+          endDate: currentDate,
+          notStarted: true,
+          progress: 0,
+          author: decodedUserId,
+          progress: 0,
+          completed: false,
+        }),
       })
-      .then((data) => {
-        console.log(data);
-        setReloadHome(true);
-        setLoader(false);
-        setIsSuccessModal(true);
-      })
-      .catch((err) => {
-        console.log(err);
-        setLoader(false);
-        setIsErrorModal(true);
-      });
+        .then((res) => {
+          if (!res.ok) {
+            // throw new Error(`${res}`);
+            console.log(res);
+          }
+          return res.json();
+        })
+        .then((data) => {
+          console.log(data);
+          setReloadHome(true);
+          setLoader(false);
+          setIsSuccessModal(true);
+        })
+        .catch((err) => {
+          console.log(err);
+          setLoader(false);
+          setIsErrorModal(true);
+        });
+    }
   };
 
+  const onChange = (event, selectedDate) => {
+    setNewEndDate(selectedDate);
+    setShowDate(false);
+  };
+
+  const showMode = (modeToShow) => {
+    setShowDate(true);
+    setMode(modeToShow);
+  };
+
+  const onChangeStartDate = (event, selectedDate) => {
+    setNewStartDate(selectedDate);
+    setShowStartDate(false);
+  };
+
+  const showStartMode = (modeToShow) => {
+    setShowStartDate(true);
+    setStartMode(modeToShow);
+  };
+  console.log(currentStartDate);
   return (
     <SafeAreaView style={styles.container}>
       <GoalScreenNav
@@ -184,23 +223,47 @@ const CreateGoalScreen = ({ route, setReloadHome, navigation }) => {
           >
             <View>
               <Text style={styles.dateSta}>Start date</Text>
-              <TextInput
-                onChangeText={(newText) => {
-                  setStartDate(newText);
-                }}
-                value={startDate}
-                style={styles.dateInput}
-              />
+              <View style={[styles.dateInput, { flexDirection: "row" }]}>
+                <Text style={{ color: "white" }}>{currentStartDate}</Text>
+                {showStartDate && (
+                  <DateTimePicker
+                    value={newStartDate}
+                    mode={startmode}
+                    is24Hour={true}
+                    onChange={onChangeStartDate}
+                  />
+                )}
+                <AntDesign
+                  onPress={() => {
+                    showStartMode("date");
+                  }}
+                  name="down"
+                  size={24}
+                  color="white"
+                />
+              </View>
             </View>
             <View>
               <Text style={styles.dateSta}>End date</Text>
-              <TextInput
-                style={styles.dateInput}
-                value={endDate}
-                onChangeText={(newText) => {
-                  setEndDate(newText);
-                }}
-              />
+              <View style={[styles.dateInput, { flexDirection: "row" }]}>
+                <Text style={{ color: "white" }}>{initialDate}</Text>
+                {showDate && (
+                  <DateTimePicker
+                    value={newEndDate}
+                    mode={mode}
+                    is24Hour={true}
+                    onChange={onChange}
+                  />
+                )}
+                <AntDesign
+                  onPress={() => {
+                    showMode("date");
+                  }}
+                  name="down"
+                  size={24}
+                  color="white"
+                />
+              </View>
             </View>
           </View>
         </View>
@@ -480,6 +543,9 @@ const styles = StyleSheet.create({
     marginTop: 9,
     color: "white",
     paddingLeft: 9,
+    alignItems: "center",
+    justifyContent: "space-between",
+    paddingRight: 9,
   },
 
   dateSta: {

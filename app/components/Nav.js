@@ -19,22 +19,36 @@ const Nav = ({ exceededGoal }) => {
         <AntDesign name="search1" size={24} color="white" />
         <Pressable onPress={notif} style={{ position: "relative" }}>
           <AntDesign name="bells" size={24} color="white" />
-          <Text
-            style={{
-              color: "white",
-              position: "absolute",
-              bottom: 10,
-              backgroundColor: "blue",
-              borderRadius: 25,
-              right: 0,
-              fontSize: 16,
-              fontWeight: 400,
-              width: 20,
-              height: 20,
-            }}
-          >
-            {exceededGoal && exceededGoal.length}
-          </Text>
+          {exceededGoal.length ? (
+            <View
+              style={{
+                position: "absolute",
+                bottom: 13,
+                left: 8,
+                width: 22,
+                height: 22,
+                backgroundColor: "blue",
+                borderRadius: 9,
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
+              <Text
+                style={{
+                  //  position: "absolute",
+                  // right: 0,
+                  // bottom: 0,
+                  color: "white",
+                  fontSize: 16,
+                  fontWeight: 400,
+                }}
+              >
+                {exceededGoal.length}
+              </Text>
+            </View>
+          ) : (
+            <Text></Text>
+          )}
         </Pressable>
       </View>
     </View>
