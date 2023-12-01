@@ -55,41 +55,41 @@ const LoginScreen = ({ navigation, isLoggedIn, setIsLoggedIn }) => {
   const loginFunc = () => {
     if (!email || !password) {
       alert("credentials can not be empty");
+    } else {
+      fetch("https://gotra-api-inh9.onrender.com/api/v1/login/", {
+        method: "POST",
+        headers: {
+          "content-type": "application/json",
+        },
+        body: JSON.stringify({ email, password }),
+      })
+        .then((res) => {
+          if (!res.ok) {
+            throw new Error(`HTTP error! status: ${res.status}`);
+            console.log("errrrd");
+          }
+          return res.json();
+        })
+        .then((data) => {
+          // console.log(data);
+
+          if (data.token) {
+            // console.log(data.token);
+            let user = jwtDecode(data.token);
+
+            AsyncStorage.setItem("my-key", data.token);
+            setIsLoggedIn(!isLoggedIn);
+            //user && console.log(user);
+            // console.log(user);
+          }
+          // navigation.navigate("Home", { name: "HomePge" });
+          console.log(data);
+        })
+        .catch((err) => {
+          console.log(err.message);
+          alert(err);
+        });
     }
-
-    fetch("https://gotra-api-inh9.onrender.com/api/v1/login/", {
-      method: "POST",
-      headers: {
-        "content-type": "application/json",
-      },
-      body: JSON.stringify({ email, password }),
-    })
-      .then((res) => {
-        if (!res.ok) {
-          throw new Error(`HTTP error! status: ${res.status}`);
-          console.log("errrrd");
-        }
-        return res.json();
-      })
-      .then((data) => {
-        // console.log(data);
-
-        if (data.token) {
-          // console.log(data.token);
-          let user = jwtDecode(data.token);
-
-          AsyncStorage.setItem("my-key", data.token);
-          setIsLoggedIn(!isLoggedIn);
-          //user && console.log(user);
-          // console.log(user);
-        } 
-        // navigation.navigate("Home", { name: "HomePge" });
-        console.log(data);
-      })
-      .catch((err) => {
-        console.log(err);
-        alert("err");
-      });
   };
   return (
     <SafeAreaView style={styles.container}>

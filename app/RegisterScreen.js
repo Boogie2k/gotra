@@ -19,19 +19,28 @@ const RegisterScreen = ({ navigation }) => {
   const [password, setPassword] = useState("");
 
   const registerFunc = () => {
-    fetch("https://gotra-api-inh9.onrender.com/api/v1/register/", {
-      method: "POST",
-      headers: {
-        "content-type": "application/json",
-      },
-      body: JSON.stringify({ username, email, password }),
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        console.log(data);
-        navigation.navigate("Login", { name: "Login" });
+    if (!username || !email || !password) {
+      alert("credentials cannot be empty");
+    } else {
+      fetch("https://gotra-api-inh9.onrender.com/api/v1/register/", {
+        method: "POST",
+        headers: {
+          "content-type": "application/json",
+        },
+        body: JSON.stringify({ username, email, password }),
       })
-      .catch((err) => console.log(err));
+        .then((res) => res.json())
+        .then((data) => {
+          console.log(data);
+          if (data === "email is already in use") {
+            console.log(data);
+            alert(data);
+          } else {
+            navigation.navigate("Login", { name: "Login" });
+          }
+        })
+        .catch((err) => console.log(err));
+    }
   };
 
   const getData = async () => {

@@ -1,7 +1,7 @@
 import { Pressable, StyleSheet, Text, View } from "react-native";
 import React from "react";
 import { AntDesign } from "@expo/vector-icons";
-import Ionicons from "@expo/vector-icons/Ionicons";
+//import Ionicons from "@expo/vector-icons/Ionicons";
 
 const Nav = ({ exceededGoal }) => {
   console.log(exceededGoal);
@@ -16,7 +16,7 @@ const Nav = ({ exceededGoal }) => {
       <Text style={styles.head}>GOTra</Text>
 
       <View style={styles.noti}>
-        <AntDesign name="search1" size={24} color="white" />
+        {/*  <AntDesign name="search1" size={24} color="white" />*/}
         <Pressable onPress={notif} style={{ position: "relative" }}>
           <AntDesign name="bells" size={24} color="white" />
           {exceededGoal.length ? (
@@ -63,7 +63,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     paddingLeft: 15,
-    paddingRight: 15,
+    paddingRight: 20,
     alignItems: "center",
   },
   head: {
@@ -75,9 +75,10 @@ const styles = StyleSheet.create({
     color: "white",
   },
   noti: {
-    display: "flex",
-    flexDirection: "row",
-    justifyContent: "space-between",
-    width: 70,
+    //display: "flex",
+    //flexDirection: "row",
+    // justifyContent: "space-between",
+    //width: 70,
+    textAlign: "right",
   },
 });

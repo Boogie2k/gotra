@@ -103,6 +103,32 @@ const GoalDetailsScreen = ({ route, setReloadHome, navigation }) => {
         deleteModalError();
       });
   };
+
+  console.log({ progressPercentage });
+
+  let startDateFormat = new Date(startDate);
+  let formattedStartDate =
+    (startDateFormat.getMonth() + 1).toString().padStart(2, "0") +
+    "/" +
+    startDateFormat.getDate().toString().padStart(2, "0") +
+    "/" +
+    startDateFormat.getFullYear();
+  //console.log(formattedDate); // Outputs: 11/12/2023
+  let endDateFormat = new Date(endDate);
+  let formattedendDate =
+    (endDateFormat.getMonth() + 1).toString().padStart(2, "0") +
+    "/" +
+    endDateFormat.getDate().toString().padStart(2, "0") +
+    "/" +
+    endDateFormat.getFullYear();
+  //console.log(formattedDate); // Outputs: 11/12/2023
+
+  //storeData();
+  const [newFormattedStartDate, setNewFormattedStartDate] =
+    useState(formattedStartDate);
+  const [newFormattedEndDate, setNewFormattedEndDate] =
+    useState(formattedendDate);
+
   const saveGoal = () => {
     if (!title) {
       alert("title can not be empty");
@@ -118,8 +144,8 @@ const GoalDetailsScreen = ({ route, setReloadHome, navigation }) => {
         body: JSON.stringify({
           title,
           description,
-          startDate: startDate,
-          endDate: endDate,
+          startDate: newFormattedStartDate,
+          endDate: newFormattedEndDate,
           subgoals,
           tags: tag,
           onHold: onHold,
@@ -149,26 +175,6 @@ const GoalDetailsScreen = ({ route, setReloadHome, navigation }) => {
         });
     }
   };
-  console.log({ progressPercentage });
-
-  let startDateFormat = new Date(startDate);
-  let formattedStartDate =
-    (startDateFormat.getMonth() + 1).toString().padStart(2, "0") +
-    "/" +
-    startDateFormat.getDate().toString().padStart(2, "0") +
-    "/" +
-    startDateFormat.getFullYear();
-  //console.log(formattedDate); // Outputs: 11/12/2023
-  let endDateFormat = new Date(endDate);
-  let formattedendDate =
-    (endDateFormat.getMonth() + 1).toString().padStart(2, "0") +
-    "/" +
-    endDateFormat.getDate().toString().padStart(2, "0") +
-    "/" +
-    endDateFormat.getFullYear();
-  //console.log(formattedDate); // Outputs: 11/12/2023
-
-  //storeData();
 
   return (
     <SafeAreaView style={styles.container}>
@@ -227,9 +233,9 @@ const GoalDetailsScreen = ({ route, setReloadHome, navigation }) => {
             </Text>
             <TextInput
               style={{ color: "white", fontSize: 17, opacity: 0.75 }}
-              value={formattedStartDate}
+              value={newFormattedStartDate}
               onChangeText={(newText) => {
-                setStartDate(newText);
+                setNewFormattedStartDate(newText);
               }}
             />
           </View>
@@ -239,9 +245,9 @@ const GoalDetailsScreen = ({ route, setReloadHome, navigation }) => {
             </Text>
             <TextInput
               style={{ color: "white", fontSize: 17, opacity: 0.75 }}
-              value={formattedendDate}
+              value={newFormattedEndDate}
               onChangeText={(newText) => {
-                setEndDate(newText);
+                setNewFormattedEndDate(newText);
               }}
             />
           </View>
