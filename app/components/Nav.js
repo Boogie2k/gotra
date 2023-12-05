@@ -1,4 +1,4 @@
-import { Pressable, StyleSheet, Text, View } from "react-native";
+import { Pressable, StyleSheet, Text, View, Image } from "react-native";
 import React from "react";
 import { AntDesign } from "@expo/vector-icons";
 //import Ionicons from "@expo/vector-icons/Ionicons";
@@ -13,10 +13,10 @@ const Nav = ({ exceededGoal }) => {
   };
   return (
     <View style={styles.navContainer}>
-      <Text style={styles.head}>GOTra</Text>
-
+      {/* <Text style={styles.head}>GOTra</Text>*/}
+      <Image source={require("../../assets/got.png")} />
       <View style={styles.noti}>
-        {/*  <AntDesign name="search1" size={24} color="white" />*/}
+        {/*  <AntDesign name="searchs1" size={24} color="white" />*/}
         <Pressable onPress={notif} style={{ position: "relative" }}>
           <AntDesign name="bells" size={24} color="white" />
           {exceededGoal.length ? (

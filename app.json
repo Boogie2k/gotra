@@ -1,15 +1,15 @@
 {
   "expo": {
-    "name": "goals-app",
-    "slug": "goals-app",
+    "name": "Gotra",
+    "slug": "Gotra",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
+    "icon": "./assets/gotra.png",
     "userInterfaceStyle": "light",
     "splash": {
-      "image": "./assets/splash.png",
+      "image": "./assets/gotra.png",
       "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
+      "backgroundColor": "#000000"
     },
     "assetBundlePatterns": [
       "**/*"
@@ -19,12 +19,18 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
-        "backgroundColor": "#ffffff"
-      }
+        "foregroundImage": "./assets/gotra.png",
+        "backgroundColor": "#000000"
+      },
+      "package": "com.boogie2k.Gotra"
     },
     "web": {
       "favicon": "./assets/favicon.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "5b4b8d73-667d-44f2-a781-3fdea21b44a8"
+      }
     }
   }
 }

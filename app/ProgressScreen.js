@@ -282,7 +282,7 @@ const styles = StyleSheet.create({
     backgroundColor: "black",
     flex: 1,
     paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
-    marginTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
+    //marginTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
     paddingLeft: 20,
     paddingRight: 20,
   },

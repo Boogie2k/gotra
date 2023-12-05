@@ -1,0 +1,21 @@
+{
+  "build": {
+    "gotra": {
+      "android": {
+        "buildType": "apk"
+      }
+    },
+    "gotra2": {
+      "android": {
+        "gradleCommand": ":app:assembleRelease"
+      }
+    },
+    "gotra3": {
+      "developmentClient": true
+    },
+    "gotra4": {
+      "distribution": "internal"
+    },
+    "production": {}
+  }
+}

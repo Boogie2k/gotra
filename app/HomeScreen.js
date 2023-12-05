@@ -101,7 +101,7 @@ const HomeApp = ({ navigation, reloadHome, setReloadHome }) => {
 
   if (isLoading || isRefreshing)
     return (
-      <View style={styles.container}>
+      <SafeAreaView style={styles.container}>
         <Modal
           animationType="slide"
           transparent={true}
@@ -112,10 +112,35 @@ const HomeApp = ({ navigation, reloadHome, setReloadHome }) => {
             <ActivityIndicator size="large" color="#0000ff" />
           </View>
         </Modal>
-      </View>
+      </SafeAreaView>
     );
 
-  if (error) return <Text>errnnors:jjs,,,{error.message}</Text>;
+  if (error)
+    return (
+      <SafeAreaView
+        style={[
+          styles.container,
+          { justifyContent: "center", alignItems: "center" },
+        ]}
+      >
+        <Text
+          style={{
+            color: "white",
+            marginBottom: 20,
+            fontSize: 20,
+            fontWeight: 400,
+          }}
+        >
+          Error: {error.message}
+        </Text>
+        <Button
+          onPress={() => {
+            refetch();
+          }}
+          title="retry"
+        />
+      </SafeAreaView>
+    );
 
   let userData =
     data &&
@@ -508,7 +533,7 @@ const styles = StyleSheet.create({
     backgroundColor: "black",
     flex: 1,
     paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
-    marginTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
+    //marginTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
   },
 
   view: {
@@ -638,20 +663,20 @@ const styles = StyleSheet.create({
   home: {
     paddingTop: 20,
     paddingBottom: 20,
-    borderTopWidth: 4,
-    borderTopColor: "blue",
+    // borderTopWidth: 4,
+    // borderTopColor: "blue",
     width: 170,
-    borderTopRightRadius: 20,
-    borderTopLeftRadius: 20,
+    // borderTopRightRadius: 20,
+    // borderTopLeftRadius: 20,
     paddingLeft: 20,
   },
   profile: {
     paddingTop: 20,
     paddingBottom: 20,
-    borderTopWidth: 4,
-    borderTopColor: "blue",
-    borderTopLeftRadius: 20,
-    borderTopRightRadius: 20,
+    // borderTopWidth: 4,
+    //  borderTopColor: "blue",
+    //  borderTopLeftRadius: 20,
+    // borderTopRightRadius: 20,
     width: 170,
     justifyContent: "flex-end",
     paddingLeft: 100,
@@ -662,8 +687,7 @@ const styles = StyleSheet.create({
     left: 163.5,
     width: 56,
     paddingLeft: 4,
-    borderBottomWidth: 6,
-    borderBottomColor: "blue",
+
     borderRadius: 50,
     minHeight: 60,
     paddingTop: 5,

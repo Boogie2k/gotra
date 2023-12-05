@@ -7,6 +7,7 @@ import {
   TextInput,
   StatusBar,
   Platform,
+  ActivityIndicator,
 } from "react-native";
 import React, { useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -17,10 +18,13 @@ const RegisterScreen = ({ navigation }) => {
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const registerFunc = () => {
+    setLoading(true);
     if (!username || !email || !password) {
       alert("credentials cannot be empty");
+      setLoading(false);
     } else {
       fetch("https://gotra-api-inh9.onrender.com/api/v1/register/", {
         method: "POST",
@@ -31,6 +35,7 @@ const RegisterScreen = ({ navigation }) => {
       })
         .then((res) => res.json())
         .then((data) => {
+          setLoading(false);
           console.log(data);
           if (data === "email is already in use") {
             console.log(data);
@@ -39,7 +44,11 @@ const RegisterScreen = ({ navigation }) => {
             navigation.navigate("Login", { name: "Login" });
           }
         })
-        .catch((err) => console.log(err));
+        .catch((err) => {
+          setLoading(false);
+          alert(err);
+          console.log(err);
+        });
     }
   };
 
@@ -103,6 +112,7 @@ const RegisterScreen = ({ navigation }) => {
         <TouchableHighlight onPress={registerFunc} style={styles.loginBtn}>
           <Text style={{ color: "white", fontWeight: 500, fontSize: 20 }}>
             Create my Account
+            {loading && <ActivityIndicator size="large" color="#0000ff" />}
           </Text>
         </TouchableHighlight>
 
@@ -110,6 +120,7 @@ const RegisterScreen = ({ navigation }) => {
           <Text style={{ color: "white" }}>Already Have an account? </Text>
           <Text
             onPress={() => {
+              setLoading(false);
               navigation.navigate("Login", { name: "Login" });
             }}
             style={{
@@ -137,18 +148,7 @@ const RegisterScreenNav = () => {
         marginBottom: 20,
       }}
     >
-      <Text
-        style={{
-          fontWeight: 600,
-          fontSize: 28.6356,
-
-          /* identical to box height */
-
-          color: "white",
-        }}
-      >
-        GOTra
-      </Text>
+      <Image source={require("../assets/got.png")} />
     </View>
   );
 };
@@ -158,7 +158,7 @@ const styles = StyleSheet.create({
     backgroundColor: "black",
     flex: 1,
     paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
-    marginTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
+    //marginTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
   },
   login: {
     fontSize: 32,

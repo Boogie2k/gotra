@@ -231,25 +231,19 @@ const GoalDetailsScreen = ({ route, setReloadHome, navigation }) => {
             <Text style={{ color: "white", fontWeight: 500, fontSize: 16 }}>
               Start Date
             </Text>
-            <TextInput
-              style={{ color: "white", fontSize: 17, opacity: 0.75 }}
-              value={newFormattedStartDate}
-              onChangeText={(newText) => {
-                setNewFormattedStartDate(newText);
-              }}
-            />
+
+            <Text style={{ color: "white", fontSize: 17, opacity: 0.75 }}>
+              {formattedStartDate}
+            </Text>
           </View>
           <View style={{ minHeight: 60, justifyContent: "space-between" }}>
             <Text style={{ color: "white", fontWeight: 500, fontSize: 16 }}>
               End Date
             </Text>
-            <TextInput
-              style={{ color: "white", fontSize: 17, opacity: 0.75 }}
-              value={newFormattedEndDate}
-              onChangeText={(newText) => {
-                setNewFormattedEndDate(newText);
-              }}
-            />
+
+            <Text style={{ color: "white", fontSize: 17, opacity: 0.75 }}>
+              {formattedendDate}
+            </Text>
           </View>
         </View>
 
@@ -525,7 +519,7 @@ const styles = StyleSheet.create({
 
     flex: 1,
     paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
-    marginTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
+    //marginTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
     paddingBottom: 20,
   },
 

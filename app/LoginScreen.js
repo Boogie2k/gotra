@@ -7,17 +7,18 @@ import {
   TextInput,
   StatusBar,
   Platform,
+  ActivityIndicator,
 } from "react-native";
 import React, { useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { jwtDecode } from "jwt-decode";
 import { decode as atob, encode as btoa } from "base-64";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import * as Updates from "expo-updates";
 
 const LoginScreen = ({ navigation, isLoggedIn, setIsLoggedIn }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
 
   console.log(isLoggedIn);
   const getData = async () => {
@@ -53,8 +54,10 @@ const LoginScreen = ({ navigation, isLoggedIn, setIsLoggedIn }) => {
   }
 
   const loginFunc = () => {
+    setLoading(true);
     if (!email || !password) {
       alert("credentials can not be empty");
+      setLoading(false);
     } else {
       fetch("https://gotra-api-inh9.onrender.com/api/v1/login/", {
         method: "POST",
@@ -78,6 +81,7 @@ const LoginScreen = ({ navigation, isLoggedIn, setIsLoggedIn }) => {
             let user = jwtDecode(data.token);
 
             AsyncStorage.setItem("my-key", data.token);
+            setLoading(false);
             setIsLoggedIn(!isLoggedIn);
             //user && console.log(user);
             // console.log(user);
@@ -86,7 +90,7 @@ const LoginScreen = ({ navigation, isLoggedIn, setIsLoggedIn }) => {
           console.log(data);
         })
         .catch((err) => {
-          console.log(err.message);
+          setLoading(false);
           alert(err);
         });
     }
@@ -128,17 +132,26 @@ const LoginScreen = ({ navigation, isLoggedIn, setIsLoggedIn }) => {
         </View>
 
         <TouchableHighlight onPress={loginFunc} style={styles.loginBtn}>
-          <Text style={{ color: "white", fontWeight: 500, fontSize: 20 }}>
+          <Text
+            style={{
+              color: "white",
+              fontWeight: 500,
+              fontSize: 20,
+              position: "relative",
+            }}
+          >
             Login
+            {loading && <ActivityIndicator size="large" color="#0000ff" />}
           </Text>
         </TouchableHighlight>
 
         <View style={styles.confirm}>
           <Text style={{ color: "white" }}>Don't Have an account? </Text>
           <Text
-            onPress={() =>
-              navigation.navigate("Register", { name: "Register" })
-            }
+            onPress={() => {
+              setLoading(false);
+              navigation.navigate("Register", { name: "Register" });
+            }}
             style={{ color: "white", textDecorationLine: "underline" }}
           >
             Sign Up
@@ -161,18 +174,7 @@ const LoginScreenNav = () => {
         marginBottom: 20,
       }}
     >
-      <Text
-        style={{
-          fontWeight: 600,
-          fontSize: 28.6356,
-
-          /* identical to box height */
-
-          color: "white",
-        }}
-      >
-        GOTra
-      </Text>
+      <Image source={require("../assets/got.png")} />
     </View>
   );
 };
@@ -182,7 +184,7 @@ const styles = StyleSheet.create({
     backgroundColor: "black",
     flex: 1,
     paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
-    marginTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
+    // marginTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
   },
   login: {
     fontSize: 32,
