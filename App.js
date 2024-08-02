@@ -56,8 +56,8 @@ export default function App() {
   return (
     <NavigationContainer>
       <Stack.Navigator screenOptions={{ headerShown: false }}>
-        {loginVal !== null ? (
-          <Stack.Screen
+      {loginVal !== null ? (
+     <Stack.Screen
             name="Home"
             options={{
               title: "",
@@ -71,8 +71,9 @@ export default function App() {
               />
             )}
           </Stack.Screen>
+          
         ) : (
-          <Stack.Screen name="Login">
+           <Stack.Screen name="Login">
             {(props) => (
               <LoginScreen
                 {...props}
@@ -83,7 +84,8 @@ export default function App() {
           </Stack.Screen>
         )}
 
-        <Stack.Screen name="CreateGoal">
+
+       <Stack.Screen name="CreateGoal">
           {(props) => (
             <CreateGoalScreen
               {...props}
@@ -91,7 +93,7 @@ export default function App() {
               setReloadHome={setReloadHome}
             />
           )}
-        </Stack.Screen>
+        </Stack.Screen> 
         <Stack.Screen name="GoalDetails">
           {(props) => (
             <GoalDetailsScreen

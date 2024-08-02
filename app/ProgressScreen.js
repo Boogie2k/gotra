@@ -193,7 +193,7 @@ const ProgressScreen = ({ route, navigation }) => {
             borderLeftColor: "#4845FF",
           }}
         >
-          {userData.map((item) => {
+          {userData&&userData.map((item) => {
             //    console.log(item);
             let date = new Date(item.updatedAt);
             let formattedDate =
@@ -294,7 +294,7 @@ const styles = StyleSheet.create({
   navText: {
     color: "white",
     alignItems: "center",
-    fontWeight: 600,
+    fontWeight: '600',
     fontSize: 19,
     marginLeft: 90,
     textTransform: "capitalize",
@@ -327,13 +327,13 @@ const styles = StyleSheet.create({
   },
 
   headText: {
-    fontWeight: 600,
+    fontWeight: '600',
     color: "#CEAFED",
     fontSize: 21.67,
   },
 
   see: {
-    fontWeight: 400,
+    fontWeight: '400',
     fontSize: 15,
     color: "white",
     textDecorationLine: "underline",
@@ -367,7 +367,7 @@ const styles = StyleSheet.create({
 
   itemTitle: {
     fontSize: 17.04,
-    fontWeight: 600,
+    fontWeight: '600',
     color: "white",
     marginBottom: 4,
     width: 170,
@@ -376,7 +376,7 @@ const styles = StyleSheet.create({
   start: {
     color: "white",
     fontSize: 17.04,
-    fontWeight: 400,
+    fontWeight: '400',
     opacity: 0.75,
   },
 
@@ -403,7 +403,7 @@ const styles = StyleSheet.create({
     color: "white",
 
     fontSize: 13.74,
-    fontWeight: 400,
+    fontWeight: '400',
 
     opacity: 0.75,
   },
@@ -423,7 +423,7 @@ const styles = StyleSheet.create({
   ballText: {
     color: "white",
     fontSize: 10,
-    fontWeight: 400,
+    fontWeight: '400',
     marginRight: 10,
   },
   chartNav: {

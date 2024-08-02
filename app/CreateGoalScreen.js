@@ -276,7 +276,7 @@ const CreateGoalScreen = ({ route, setReloadHome, navigation }) => {
               }
             }
           >
-            <Text style={{ color: "white", fontSize: 22, fontWeight: 600 }}>
+            <Text style={{ color: "white", fontSize: 22, /* fontWeight: 600 */ }}>
               Add sub-goals
             </Text>
             <View style={styles.tagInput}>
@@ -347,7 +347,7 @@ const CreateGoalScreen = ({ route, setReloadHome, navigation }) => {
                       style={{
                         color: "white",
                         fontSize: 17,
-                        fontWeight: 400,
+                  /*       fontWeight: 400, */
                         opacity: 0.75,
                         width: "30%",
                       }}
@@ -361,7 +361,7 @@ const CreateGoalScreen = ({ route, setReloadHome, navigation }) => {
         </View>
 
         <View style={{ marginTop: 15 }}>
-          <Text style={{ color: "white", fontWeight: 600, fontSize: 22 }}>
+          <Text style={{ color: "white", /* fontWeight: 600, */ fontSize: 22 }}>
             Add Tags
           </Text>
 
@@ -429,7 +429,7 @@ const CreateGoalScreen = ({ route, setReloadHome, navigation }) => {
                             color: "white",
                             marginRight: 9,
                             fontSize: 15,
-                            fontWeight: 500,
+                          /*   fontWeight: 500, */
                           }}
                         >
                           {item}
@@ -449,7 +449,7 @@ const CreateGoalScreen = ({ route, setReloadHome, navigation }) => {
         </View>
       </ScrollView>
       <TouchableHighlight onPress={saveGoal} style={styles.btn}>
-        <Text style={{ color: "white", fontSize: 22, fontWeight: 500 }}>
+        <Text style={{ color: "white", fontSize: 22, /* fontWeight: 500 */ }}>
           Create Goals
         </Text>
       </TouchableHighlight>
@@ -515,14 +515,14 @@ const styles = StyleSheet.create({
   navText: {
     color: "white",
     alignItems: "center",
-    fontWeight: 600,
+    /* fontWeight: 600, */
     fontSize: 19,
     marginLeft: 90,
     textTransform: "capitalize",
   },
   name: {
     color: "white",
-    fontWeight: 600,
+   /*  fontWeight: 600, */
     fontSize: 22,
   },
   nameInput: {
@@ -550,7 +550,7 @@ const styles = StyleSheet.create({
 
   dateSta: {
     fontSize: 16,
-    fontWeight: 500,
+   /*  fontWeight: 500, */
     color: "white",
   },
 

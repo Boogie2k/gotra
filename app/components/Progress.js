@@ -60,7 +60,7 @@ const styles = StyleSheet.create({
     paddingEnd: 15,
   },
   head: {
-    fontWeight: 600,
+    fontWeight: '600',
     fontSize: 18.5243,
     lineHeight: 28,
     /* identical to box height */
@@ -69,7 +69,7 @@ const styles = StyleSheet.create({
   },
 
   num: {
-    fontWeight: 600,
+    fontWeight: '600',
     fontSize: 38.8746,
     lineHeight: 58,
 
@@ -78,7 +78,7 @@ const styles = StyleSheet.create({
   },
 
   status: {
-    fontWeight: 400,
+    fontWeight: '400',
     fontSize: 15.9777,
     lineHeight: 24,
     /* identical to box height */

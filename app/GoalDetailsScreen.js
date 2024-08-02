@@ -224,11 +224,11 @@ const GoalDetailsScreen = ({ route, setReloadHome, navigation }) => {
         </View>
 
         <View style={styles.tl}>
-          <Text style={{ color: "white", fontSize: 22, fontWeight: 600 }}>
+          <Text style={{ color: "white", fontSize: 22, /* fontWeight: 600 */ }}>
             Timeline
           </Text>
           <View style={{ minHeight: 60, justifyContent: "space-between" }}>
-            <Text style={{ color: "white", fontWeight: 500, fontSize: 16 }}>
+            <Text style={{ color: "white",/*  fontWeight: 500, */ fontSize: 16 }}>
               Start Date
             </Text>
 
@@ -237,7 +237,7 @@ const GoalDetailsScreen = ({ route, setReloadHome, navigation }) => {
             </Text>
           </View>
           <View style={{ minHeight: 60, justifyContent: "space-between" }}>
-            <Text style={{ color: "white", fontWeight: 500, fontSize: 16 }}>
+            <Text style={{ color: "white", /* fontWeight: 500, */ fontSize: 16 }}>
               End Date
             </Text>
 
@@ -270,7 +270,7 @@ const GoalDetailsScreen = ({ route, setReloadHome, navigation }) => {
                 minHeight: 34,
                 width: `${progressPercentage}%`,
                 fontSize: 18,
-                fontWeight: 500,
+                /* fontWeight:' 500', */
               }}
             >
               {progressPercentage}%
@@ -286,7 +286,7 @@ const GoalDetailsScreen = ({ route, setReloadHome, navigation }) => {
                 borderRadius: 50,
 
                 fontSize: 18,
-                fontWeight: 500,
+               /*  fontWeight: '500', */
               }}
             >
               0%
@@ -295,7 +295,7 @@ const GoalDetailsScreen = ({ route, setReloadHome, navigation }) => {
         </View>
 
         <View>
-          <Text style={{ color: "white", fontWeight: 600, fontSize: 22 }}>
+          <Text style={{ color: "white", /* fontWeight: '600', */ fontSize: 22 }}>
             sub-goals
           </Text>
 
@@ -374,7 +374,7 @@ const GoalDetailsScreen = ({ route, setReloadHome, navigation }) => {
         </View>
 
         <View style={{ marginTop: 20 }}>
-          <Text style={{ color: "white", fontWeight: 600, fontSize: 22 }}>
+          <Text style={{ color: "white", fontWeight: '600', fontSize: 22 }}>
             Tags
           </Text>
 
@@ -415,7 +415,7 @@ const GoalDetailsScreen = ({ route, setReloadHome, navigation }) => {
             marginTop: 30,
           }}
         >
-          <Text style={{ color: "white", fontWeight: 600, fontSize: 22 }}>
+          <Text style={{ color: "white", fontWeight:' 600', fontSize: 22 }}>
             Status
           </Text>
           <View style={{ flexDirection: "row" }}>
@@ -431,7 +431,7 @@ const GoalDetailsScreen = ({ route, setReloadHome, navigation }) => {
               size={24}
               color={onHold ? "red" : "white"}
             />
-            <Text style={{ color: "white", fontWeight: 500, fontSize: 17 }}>
+            <Text style={{ color: "white", fontWeight: '500', fontSize: 17 }}>
               on hold
             </Text>
           </View>
@@ -450,7 +450,7 @@ const GoalDetailsScreen = ({ route, setReloadHome, navigation }) => {
                 }
               }}
             />
-            <Text style={{ color: "white", fontWeight: 500, fontSize: 17 }}>
+            <Text style={{ color: "white", fontWeight: '500', fontSize: 17 }}>
               completed
             </Text>
           </View>
@@ -478,7 +478,7 @@ const GoalDetailsNav = ({ saveGoal, deleteGoal, loader, navigation }) => {
           navigation.goBack();
         }}
       />
-      <Text style={{ fontSize: 20, fontWeight: 600, color: "white" }}>
+      <Text style={{ fontSize: 20, fontWeight: '600', color: "white" }}>
         Goal Details
       </Text>
       <View style={{ flexDirection: "row" }}>
@@ -535,7 +535,7 @@ const styles = StyleSheet.create({
   },
   descText: {
     fontSize: 22,
-    fontWeight: 600,
+    fontWeight: '600',
     color: "white",
   },
   descInput: {

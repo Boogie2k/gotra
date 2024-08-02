@@ -40,7 +40,7 @@ const Nav = ({ exceededGoal }) => {
                   // bottom: 0,
                   color: "white",
                   fontSize: 16,
-                  fontWeight: 400,
+                  fontWeight: '400',
                 }}
               >
                 {exceededGoal.length}
@@ -67,7 +67,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   head: {
-    fontWeight: 600,
+    fontWeight: '600',
     fontSize: 28.6356,
 
     /* identical to box height */

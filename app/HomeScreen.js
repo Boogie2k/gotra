@@ -128,7 +128,7 @@ const HomeApp = ({ navigation, reloadHome, setReloadHome }) => {
             color: "white",
             marginBottom: 20,
             fontSize: 20,
-            fontWeight: 400,
+            fontWeight: 'normal',
           }}
         >
           Error: {error.message}
@@ -145,7 +145,7 @@ const HomeApp = ({ navigation, reloadHome, setReloadHome }) => {
   let userData =
     data &&
     data.filter((item) => {
-      return item.author.some((author) => author._id === decodedUserId);
+      return item.author&& item.author.some((author) => author._id == decodedUserId);
     });
 
   const not_startedNum =
@@ -554,13 +554,13 @@ const styles = StyleSheet.create({
   },
 
   headText: {
-    fontWeight: 600,
+    fontWeight: '600',
     color: "#CEAFED",
     fontSize: 21.67,
   },
 
   see: {
-    fontWeight: 400,
+    fontWeight: 'normal',
     fontSize: 15,
     color: "white",
     textDecorationLine: "underline",
@@ -594,7 +594,7 @@ const styles = StyleSheet.create({
 
   itemTitle: {
     fontSize: 17.04,
-    fontWeight: 600,
+    fontWeight: 'normal',
     color: "white",
 
     marginBottom: 4,
@@ -606,7 +606,7 @@ const styles = StyleSheet.create({
   start: {
     color: "white",
     fontSize: 17.04,
-    fontWeight: 400,
+    fontWeight: '400',
     opacity: 0.75,
   },
 
@@ -633,7 +633,7 @@ const styles = StyleSheet.create({
     color: "white",
 
     fontSize: 13.74,
-    fontWeight: 400,
+    fontWeight:'normal',
 
     opacity: 0.75,
     //  width: 43,

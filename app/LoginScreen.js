@@ -104,7 +104,7 @@ const LoginScreen = ({ navigation, isLoggedIn, setIsLoggedIn }) => {
           style={{
             marginLeft: 20,
             marginTop: 15,
-            fontWeight: 400,
+            fontWeight:'400',
             fontSize: 20,
           }}
         >
@@ -135,7 +135,7 @@ const LoginScreen = ({ navigation, isLoggedIn, setIsLoggedIn }) => {
           <Text
             style={{
               color: "white",
-              fontWeight: 500,
+              fontWeight: '500',
               fontSize: 20,
               position: "relative",
             }}
@@ -188,7 +188,7 @@ const styles = StyleSheet.create({
   },
   login: {
     fontSize: 32,
-    fontWeight: 600,
+    fontWeight: '600',
     color: "#fff",
     marginLeft: 20,
     marginTop: 40,
@@ -197,7 +197,7 @@ const styles = StyleSheet.create({
     marginLeft: 20,
     marginTop: 20,
   },
-  titles: { fontWeight: 500, fontSize: 20, color: "#fff", marginTop: 5 },
+  titles: { fontWeight: '500', fontSize: 20, color: "#fff", marginTop: 5 },
   inputs: {
     borderWidth: 1,
     borderStyle: "solid",
@@ -218,7 +218,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     borderRadius: 1000,
     fontSize: 16,
-    fontWeight: 500,
+    fontWeight: '500',
     marginTop: 70,
     marginLeft: 20,
   },
