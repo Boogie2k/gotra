@@ -14,7 +14,7 @@ const Nav = ({ exceededGoal }) => {
   return (
     <View style={styles.navContainer}>
       {/* <Text style={styles.head}>GOTra</Text>*/}
-      <Image source={require("../../assets/got.png")} />
+      <Image source={require("../../assets/got-removebg.png")} />
       <View style={styles.noti}>
         {/*  <AntDesign name="searchs1" size={24} color="white" />*/}
         <Pressable onPress={notif} style={{ position: "relative" }}>

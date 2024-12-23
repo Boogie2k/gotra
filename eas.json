@@ -1,21 +1,18 @@
 {
+  "cli": {
+    "version": ">= 10.2.2"
+  },
   "build": {
-    "gotra": {
-      "android": {
-        "buildType": "apk"
-      }
-    },
-    "gotra2": {
-      "android": {
-        "gradleCommand": ":app:assembleRelease"
-      }
-    },
-    "gotra3": {
-      "developmentClient": true
-    },
-    "gotra4": {
+    "development": {
+      "developmentClient": true,
       "distribution": "internal"
     },
+    "preview": {
+      "distribution": "internal"
+    },
+    "production": {}
+  },
+  "submit": {
     "production": {}
   }
 }

@@ -1,1 +1,1 @@
-export const fetchedData = "https://goapi-cqoy.onrender.com/";
+export const fetchedData ="https://gotra-api-inh9.onrender.com/api/v1";

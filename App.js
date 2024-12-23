@@ -55,6 +55,7 @@ export default function App() {
   // console.log(loginVal);
   return (
     <NavigationContainer>
+     <StatusBar backgroundColor='#fff'  style="dark" />
       <Stack.Navigator screenOptions={{ headerShown: false }}>
         {loginVal !== null ? (
           <Stack.Screen

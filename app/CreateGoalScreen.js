@@ -15,6 +15,8 @@ import { StatusBar } from "react-native";
 import { AntDesign } from "@expo/vector-icons";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { Octicons } from "@expo/vector-icons";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import * as SecureStore from 'expo-secure-store';
 
 const CreateGoalScreen = ({ route, setReloadHome, navigation }) => {
   const [loader, setLoader] = useState(false);
@@ -99,8 +101,15 @@ const CreateGoalScreen = ({ route, setReloadHome, navigation }) => {
     setSubgoals(updatedGoal);
   };
 
-  console.log(`${currentMonth}-${currentDay}-${currentYear}`);
-  const saveGoal = () => {
+  
+  const saveGoal = async () => {
+
+      const token =await SecureStore.getItemAsync('gotraKey');
+
+
+    try {
+
+
     if (!title) {
       alert("title cannot be empty");
     } else if (!description) {
@@ -111,6 +120,7 @@ const CreateGoalScreen = ({ route, setReloadHome, navigation }) => {
       fetch(`https://gotra-api-inh9.onrender.com/api/v1/goal/`, {
         method: "POST",
         headers: {
+          authorization: `Bearer ${token}`,
           "content-type": "application/json",
         },
         body: JSON.stringify({
@@ -146,6 +156,12 @@ const CreateGoalScreen = ({ route, setReloadHome, navigation }) => {
           setIsErrorModal(true);
         });
     }
+      
+    } catch (error) {
+      console.log({error})
+      
+    }
+
   };
 
   const onChange = (event, selectedDate) => {
@@ -276,7 +292,7 @@ const CreateGoalScreen = ({ route, setReloadHome, navigation }) => {
               }
             }
           >
-            <Text style={{ color: "white", fontSize: 22, fontWeight: 600 }}>
+            <Text style={{ color: "white", fontSize: 22, fontWeight: '600' }}>
               Add sub-goals
             </Text>
             <View style={styles.tagInput}>
@@ -287,7 +303,7 @@ const CreateGoalScreen = ({ route, setReloadHome, navigation }) => {
                 }}
                 style={{
                   color: "white",
-                  paddingLeft: 5,
+                  paddingLeft: 10,
                   width: "70%",
                 }}
               />
@@ -347,7 +363,7 @@ const CreateGoalScreen = ({ route, setReloadHome, navigation }) => {
                       style={{
                         color: "white",
                         fontSize: 17,
-                        fontWeight: 400,
+                        fontWeight: '400',
                         opacity: 0.75,
                         width: "30%",
                       }}
@@ -360,8 +376,8 @@ const CreateGoalScreen = ({ route, setReloadHome, navigation }) => {
           </View>
         </View>
 
-        <View style={{ marginTop: 15 }}>
-          <Text style={{ color: "white", fontWeight: 600, fontSize: 22 }}>
+        <View style={{ marginTop: 15,marginBottom:15 }}>
+          <Text style={{ color: "white", fontWeight: '600', fontSize: 22 }}>
             Add Tags
           </Text>
 
@@ -378,7 +394,7 @@ const CreateGoalScreen = ({ route, setReloadHome, navigation }) => {
                 }}
                 style={{
                   color: "white",
-                  paddingLeft: 5,
+                  paddingLeft: 10,
                   width: "70%",
                 }}
               />
@@ -422,14 +438,14 @@ const CreateGoalScreen = ({ route, setReloadHome, navigation }) => {
                           marginRight: 9,
                           borderRadius: 43,
                         }}
-                        key={new Date().getTime()}
+                        key={index}
                       >
                         <Text
                           style={{
                             color: "white",
                             marginRight: 9,
                             fontSize: 15,
-                            fontWeight: 500,
+                            fontWeight: '500',
                           }}
                         >
                           {item}
@@ -449,7 +465,7 @@ const CreateGoalScreen = ({ route, setReloadHome, navigation }) => {
         </View>
       </ScrollView>
       <TouchableHighlight onPress={saveGoal} style={styles.btn}>
-        <Text style={{ color: "white", fontSize: 22, fontWeight: 500 }}>
+        <Text style={{ color: "white", fontSize: 22, fontWeight: '500' }}>
           Create Goals
         </Text>
       </TouchableHighlight>
@@ -511,18 +527,19 @@ const styles = StyleSheet.create({
   nav: {
     flexDirection: "row",
     paddingBottom: 20,
+    paddingTop:10
   },
   navText: {
     color: "white",
     alignItems: "center",
-    fontWeight: 600,
+    fontWeight: '600',
     fontSize: 19,
     marginLeft: 90,
     textTransform: "capitalize",
   },
   name: {
     color: "white",
-    fontWeight: 600,
+    fontWeight:'600',
     fontSize: 22,
   },
   nameInput: {
@@ -550,7 +567,7 @@ const styles = StyleSheet.create({
 
   dateSta: {
     fontSize: 16,
-    fontWeight: 500,
+    fontWeight: '500',
     color: "white",
   },
 

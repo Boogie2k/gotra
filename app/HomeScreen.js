@@ -27,18 +27,23 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { jwtDecode } from "jwt-decode";
 import { decode as atob, encode as btoa } from "base-64";
 import { LinearGradient } from "expo-linear-gradient";
+import * as SecureStore from 'expo-secure-store';
+import { get } from "react-native/Libraries/TurboModule/TurboModuleRegistry";
+
+
+
 
 const queryClient = new QueryClient();
 
 export function Home({ navigation, reloadHome, setReloadHome }) {
   return (
-    <QueryClientProvider client={queryClient}>
+  
       <HomeApp
         navigation={navigation}
         reloadHome={reloadHome}
         setReloadHome={setReloadHome}
       />
-    </QueryClientProvider>
+
   );
 }
 
@@ -52,27 +57,13 @@ const HomeApp = ({ navigation, reloadHome, setReloadHome }) => {
   const [loginVal, setLoginVal] = useState("");
   const [isList, setIsList] = React.useState(false);
   const [isRefreshing, setIsRefreshing] = React.useState(false);
+  const [isLoading, setIsLoading] = React.useState(true);
+  const [isError, setIsError] = React.useState(false);
+  const [data, setData] = React.useState([]);
+
 
   //const fetched = isRefreshing || "/api/v1/goal/";
 
-  const getData = async () => {
-    try {
-      const val = await AsyncStorage.getItem("my-key");
-
-      setLoginVal(val);
-      if (loginVal !== null) {
-        // value previously stored
-        // console.log(loginVal);
-      } else {
-        console.log("emp");
-      }
-    } catch (e) {
-      // error reading value
-      console.log("err");
-    }
-  };
-
-  getData();
 
   if (!global.btoa) {
     global.btoa = btoa;
@@ -81,25 +72,84 @@ const HomeApp = ({ navigation, reloadHome, setReloadHome }) => {
     global.atob = atob;
   }
 
-  let decodedUser = loginVal && jwtDecode(loginVal);
+  
+
+  const tokens =SecureStore.getItem('gotraKey');
+
+let decodedUser =  jwtDecode(tokens);
   let decodedUserId = decodedUser && decodedUser.userId;
 
-  const { isLoading, error, data, refetch } = useQuery({
+/*   const { isLoading, error, data, refetch }  =    useQuery({
     queryKey: ["repoData"],
     queryFn: () =>
-      fetch(`https://gotra-api-inh9.onrender.com/api/v1/goal/`).then((res) =>
+      fetch(`https://gotra-api-inh9.onrender.com/api/v1/goal/`,{
+        headers:{
+          'Authorization': `Bearer ${token}`
+        }
+      }).then((res) =>
         res.json()
       ),
-  });
+  }); */
 
   useEffect(() => {
     if (reloadHome) {
-      refetch();
+
       setReloadHome(false);
     }
   }, [reloadHome]);
 
+
+  const getGoals = async () => {
+    setIsLoading(true);
+    const token = await SecureStore.getItemAsync("gotraKey");
+    
+
+    try {
+       const response= await fetch(`https://gotra-api-inh9.onrender.com/api/v1/goal`,{  
+      headers:{
+        'Authorization':`Bearer ${token}`,
+        'Content-Type':'application/json'
+      }
+    });
+   
+
+    if(!response.ok){
+      setIsError(true);
+      setIsLoading(false);
+    }
+
+     const result= await response.json();
+     console.log(response)
+     console.log({result})
+      setIsLoading(false);
+      setIsError(false);
+    setData(result);
+   
+      
+    } catch (error) {
+      console.log({error});
+
+
+       setIsLoading(false);
+             setIsError(true);
+
+      
+    }finally{
+      setIsLoading(false)
+    }
+
+  }
+  useEffect(()=>{
+    getGoals();
+   
+  },[reloadHome])
+
+
   if (isLoading || isRefreshing)
+
+   // console.log({data})
+
+  
     return (
       <SafeAreaView style={styles.container}>
         <Modal
@@ -115,7 +165,7 @@ const HomeApp = ({ navigation, reloadHome, setReloadHome }) => {
       </SafeAreaView>
     );
 
-  if (error)
+  if (isError)
     return (
       <SafeAreaView
         style={[
@@ -128,34 +178,37 @@ const HomeApp = ({ navigation, reloadHome, setReloadHome }) => {
             color: "white",
             marginBottom: 20,
             fontSize: 20,
-            fontWeight: 400,
+            fontWeight: '400',
           }}
         >
-          Error: {error.message}
+          Error: something went wrong
         </Text>
         <Button
           onPress={() => {
-            refetch();
+            setReloadHome(true);
           }}
           title="retry"
         />
       </SafeAreaView>
     );
 
-  let userData =
+
+ /*  let userData =
     data &&
     data.filter((item) => {
       return item.author.some((author) => author._id === decodedUserId);
-    });
+    }); */
+ 
+    console.log({data})
 
   const not_startedNum =
-    userData && userData.filter((item) => item.notStarted == true);
+   data.length>0 && data.filter((item) => item.notStarted == true);
   const completdNum =
-    userData && userData.filter((item) => item.completed == true);
+    data.length>0 && data.filter((item) => item.completed == true);
 
   const inProgressNum =
-    userData &&
-    userData.filter(
+    data.length>0 &&
+    data.filter(
       (item) =>
         item.notStarted !== true &&
         item.completed !== true &&
@@ -163,7 +216,7 @@ const HomeApp = ({ navigation, reloadHome, setReloadHome }) => {
     );
 
   const on_hold_num =
-    userData && userData.filter((item) => item.onHold == true);
+    data.length>0 &&data.filter((item) => item.onHold == true);
 
   progressProps = {
     not_startedNum: not_startedNum.length,
@@ -172,23 +225,37 @@ const HomeApp = ({ navigation, reloadHome, setReloadHome }) => {
   };
   //  console.log;
 
-  let exceededGoal = userData.filter(
+  let exceededGoal = data&& data.length>0&&data.filter(
     (item) => item.endDate < new Date().toISOString() && !item.completed
   );
 
   console.log(exceededGoal.length);
 
+  console.log({loginVal})
+ 
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.nav}>
         <Nav exceededGoal={exceededGoal} />
       </View>
+{/*          <LinearGradient
+         colors={[
+            "rgba(88, 0, 175, 0.3)", // Start with fully transparent purple
+          
+           
+            "rgba(255, 0, 61, 0.3)"  // End with fully transparent red
+             ]}// RGBA colors with 0.5 opacity
+  start={{ x: 0, y: 0 }} // Start from the left
+  end={{ x: 1, y: 0 }}   // End on the right
+        style={styles.background}
+      /> */}
       <ScrollView>
         <View style={{ marginTop: 33 }}>
+        
           <Progress
             progressProps={progressProps}
             data={data}
-            userData={userData}
+            userData={data}
             navigation={navigation}
           />
           <View
@@ -226,7 +293,7 @@ const HomeApp = ({ navigation, reloadHome, setReloadHome }) => {
               <Text style={styles.headText}>Not started</Text>
               <Text
                 onPress={() =>
-                  navigation.navigate("ProgressScreen", { data, userData })
+                  navigation.navigate("ProgressScreen", { data })
                 }
                 style={styles.see}
               >
@@ -241,7 +308,7 @@ const HomeApp = ({ navigation, reloadHome, setReloadHome }) => {
                 flexDirection: isList ? "column" : "row",
               }}
             >
-              {not_startedNum.map((item) => {
+              {not_startedNum&&not_startedNum.map((item) => {
                 let date = new Date(item.updatedAt);
                 let formattedDate =
                   date.getDate().toString().padStart(2, "0") +
@@ -274,7 +341,7 @@ const HomeApp = ({ navigation, reloadHome, setReloadHome }) => {
                       <Text style={styles.start}>{formattedDate}</Text>
                     </View>
 
-                    <LinearGradient
+                   {/* <LinearGradient
                       start={{ x: 0, y: 0 }}
                       end={{ x: 1, y: 0 }}
                       colors={["white", "#343434"]}
@@ -284,7 +351,10 @@ const HomeApp = ({ navigation, reloadHome, setReloadHome }) => {
                       <View style={styles.progressInnerView}>
                         <Text style={styles.progress}>{item.progress}%</Text>
                       </View>
-                    </LinearGradient>
+                    </LinearGradient> */} 
+                     <View style={[styles.progressInnerView, styles.progressView]}>
+                        <Text style={styles.progress}>{item.progress}%</Text>
+                      </View>
                   </Pressable>
                 );
               })}
@@ -297,7 +367,7 @@ const HomeApp = ({ navigation, reloadHome, setReloadHome }) => {
               </Text>
               <Text
                 onPress={() =>
-                  navigation.navigate("ProgressScreen", { data, userData })
+                  navigation.navigate("ProgressScreen", { data })
                 }
                 style={styles.see}
               >
@@ -312,7 +382,7 @@ const HomeApp = ({ navigation, reloadHome, setReloadHome }) => {
                 flexDirection: isList ? "column" : "row",
               }}
             >
-              {on_hold_num.map((item) => {
+              {on_hold_num&&on_hold_num.map((item) => {
                 let date = new Date(item.updatedAt);
                 let formattedDate =
                   date.getDate().toString().padStart(2, "0") +
@@ -324,7 +394,7 @@ const HomeApp = ({ navigation, reloadHome, setReloadHome }) => {
                   <Pressable
                     key={item._id}
                     onPress={() =>
-                      navigation.navigate("GoalDetails", { item, userData })
+                      navigation.navigate("GoalDetails", { item })
                     }
                     style={styles.item}
                   >
@@ -340,7 +410,7 @@ const HomeApp = ({ navigation, reloadHome, setReloadHome }) => {
                       <Text style={styles.start}>{formattedDate}</Text>
                     </View>
 
-                    <LinearGradient
+              {/*      <LinearGradient
                       start={{ x: 0, y: 0 }}
                       end={{ x: 1, y: 0 }}
                       colors={["white", "#343434"]}
@@ -350,7 +420,14 @@ const HomeApp = ({ navigation, reloadHome, setReloadHome }) => {
                       <View style={styles.progressInnerView}>
                         <Text style={styles.progress}>{item.progress}%</Text>
                       </View>
-                    </LinearGradient>
+                    </LinearGradient>  
+                    
+                    
+                    */}
+
+                     <View style={[styles.progressInnerView, styles.progressView]}>
+                        <Text style={styles.progress}>{item.progress}%</Text>
+                      </View>
                   </Pressable>
                 );
               })}
@@ -363,7 +440,7 @@ const HomeApp = ({ navigation, reloadHome, setReloadHome }) => {
               </Text>
               <Text
                 onPress={() =>
-                  navigation.navigate("ProgressScreen", { data, userData })
+                  navigation.navigate("ProgressScreen", { data })
                 }
                 style={styles.see}
               >
@@ -378,7 +455,7 @@ const HomeApp = ({ navigation, reloadHome, setReloadHome }) => {
                 flexDirection: isList ? "column" : "row",
               }}
             >
-              {completdNum.map((item) => {
+              {completdNum&&completdNum.map((item) => {
                 let date = new Date(item.updatedAt);
                 let formattedDate =
                   date.getDate().toString().padStart(2, "0") +
@@ -406,7 +483,7 @@ const HomeApp = ({ navigation, reloadHome, setReloadHome }) => {
                       <Text style={styles.start}>{formattedDate}</Text>
                     </View>
 
-                    <LinearGradient
+                    {/*  <LinearGradient
                       start={{ x: 0, y: 0 }}
                       end={{ x: 1, y: 0 }}
                       colors={["white", "#343434"]}
@@ -416,7 +493,11 @@ const HomeApp = ({ navigation, reloadHome, setReloadHome }) => {
                       <View style={styles.progressInnerView}>
                         <Text style={styles.progress}>{item.progress}%</Text>
                       </View>
-                    </LinearGradient>
+                    </LinearGradient>  */}
+
+                     <View style={[styles.progressInnerView, styles.progressView]}>
+                        <Text style={styles.progress}>{item.progress}%</Text>
+                      </View>
                   </Pressable>
                 );
               })}
@@ -429,7 +510,7 @@ const HomeApp = ({ navigation, reloadHome, setReloadHome }) => {
               </Text>
               <Text
                 onPress={() =>
-                  navigation.navigate("ProgressScreen", { data, userData })
+                  navigation.navigate("ProgressScreen", { data })
                 }
                 style={styles.see}
               >
@@ -444,7 +525,7 @@ const HomeApp = ({ navigation, reloadHome, setReloadHome }) => {
                 flexDirection: isList ? "column" : "row",
               }}
             >
-              {inProgressNum.map((item) => {
+              {inProgressNum&&inProgressNum.map((item) => {
                 let date = new Date(item.updatedAt);
                 let formattedDate =
                   date.getDate().toString().padStart(2, "0") +
@@ -477,7 +558,7 @@ const HomeApp = ({ navigation, reloadHome, setReloadHome }) => {
                       <Text style={styles.start}>{formattedDate}</Text>
                     </View>
 
-                    <LinearGradient
+                {/*   <LinearGradient
                       start={{ x: 0, y: 0 }}
                       end={{ x: 1, y: 0 }}
                       colors={["white", "#343434"]}
@@ -487,7 +568,10 @@ const HomeApp = ({ navigation, reloadHome, setReloadHome }) => {
                       <View style={styles.progressInnerView}>
                         <Text style={styles.progress}>{item.progress}%</Text>
                       </View>
-                    </LinearGradient>
+                    </LinearGradient>  */}
+                     <View style={[styles.progressInnerView, styles.progressView]}>
+                        <Text style={styles.progress}>{item.progress}%</Text>
+                      </View>
                   </Pressable>
                 );
               })}
@@ -521,7 +605,7 @@ const HomeApp = ({ navigation, reloadHome, setReloadHome }) => {
             color="white"
           />
         </View>
-      </View>
+      </View> 
     </SafeAreaView>
   );
 };
@@ -554,13 +638,13 @@ const styles = StyleSheet.create({
   },
 
   headText: {
-    fontWeight: 600,
+    fontWeight: '600',
     color: "#CEAFED",
     fontSize: 21.67,
   },
 
   see: {
-    fontWeight: 400,
+    fontWeight:'400',
     fontSize: 15,
     color: "white",
     textDecorationLine: "underline",
@@ -594,7 +678,7 @@ const styles = StyleSheet.create({
 
   itemTitle: {
     fontSize: 17.04,
-    fontWeight: 600,
+    fontWeight: '600',
     color: "white",
 
     marginBottom: 4,
@@ -606,7 +690,7 @@ const styles = StyleSheet.create({
   start: {
     color: "white",
     fontSize: 17.04,
-    fontWeight: 400,
+    fontWeight: '400',
     opacity: 0.75,
   },
 
@@ -633,7 +717,7 @@ const styles = StyleSheet.create({
     color: "white",
 
     fontSize: 13.74,
-    fontWeight: 400,
+    fontWeight: '400',
 
     opacity: 0.75,
     //  width: 43,
@@ -684,7 +768,7 @@ const styles = StyleSheet.create({
   add: {
     position: "absolute",
     bottom: 36,
-    left: 163.5,
+    left: '43%',
     width: 56,
     paddingLeft: 4,
 
@@ -698,5 +782,25 @@ const styles = StyleSheet.create({
     alignItems: "center",
     marginTop: 22,
     backgroundColor: "rgba(0,0,0,0.4)",
+  },
+  nav:{
+    paddingTop: 10,
+    zIndex:10
+    
+  },
+   background: {
+    position: "absolute",
+
+    top: 0,
+    left: 0,
+    right: 0,
+    //backgroundColor: "red",
+    // bottom: 0,
+    // marginTop: 10,
+    height: "32%",
+    //top: 200,
+    borderWidth: 0,
+    borderRadius:32
+
   },
 });

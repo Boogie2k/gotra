@@ -25,17 +25,17 @@ const ProgressScreen = ({ route, navigation }) => {
   const screenWidth = Dimensions.get("window").width;
   const screenHeight = Dimensions.get("window").height;
 
-  const { data, userData } = route.params;
+  const { data, } = route.params;
   //console.log(data);
-  console.log(userData);
+
 
   const not_startedNum =
-    userData && userData.filter((item) => item.notStarted == true);
+   data && data.filter((item) => item.notStarted == true);
   const completdNum =
-    userData && userData.filter((item) => item.completed == true);
+   data &&data.filter((item) => item.completed == true);
   const inProgressNum =
-    userData &&
-    userData.filter(
+   data &&
+   data.filter(
       (item) =>
         item.notStarted !== true &&
         item.completed !== true &&
@@ -43,7 +43,7 @@ const ProgressScreen = ({ route, navigation }) => {
     );
 
   const on_hold_num =
-    userData && userData.filter((item) => item.onHold == true);
+    data && data.filter((item) => item.onHold == true);
 
   const [firstHalf, setFirstHalf] = useState(true);
 
@@ -193,7 +193,7 @@ const ProgressScreen = ({ route, navigation }) => {
             borderLeftColor: "#4845FF",
           }}
         >
-          {userData.map((item) => {
+          {data.map((item) => {
             //    console.log(item);
             let date = new Date(item.updatedAt);
             let formattedDate =
@@ -239,17 +239,18 @@ const ProgressScreen = ({ route, navigation }) => {
                   <Text style={styles.start}>{formattedDate}</Text>
                 </View>
 
-                <LinearGradient
+          {/*       <LinearGradient
                   start={{ x: 0, y: 0 }}
                   end={{ x: 1, y: 0 }}
                   colors={["white", "#343434"]}
                   locations={[item.progress / 100, item.progress / 100]} // This makes the first 30% of the gradient white
                   style={styles.progressView}
                 >
-                  <View style={styles.progressInnerView}>
+                 
+                </LinearGradient> */}
+                 <View style={[styles.progressInnerView, styles.progressView]}>
                     <Text style={styles.progress}>{item.progress}%</Text>
                   </View>
-                </LinearGradient>
               </Pressable>
             );
           })}
@@ -289,12 +290,12 @@ const styles = StyleSheet.create({
 
   nav: {
     flexDirection: "row",
-    paddingBottom: 9,
+   paddingVertical:20
   },
   navText: {
     color: "white",
     alignItems: "center",
-    fontWeight: 600,
+    fontWeight: '600',
     fontSize: 19,
     marginLeft: 90,
     textTransform: "capitalize",
@@ -327,13 +328,13 @@ const styles = StyleSheet.create({
   },
 
   headText: {
-    fontWeight: 600,
+    fontWeight: '600',
     color: "#CEAFED",
     fontSize: 21.67,
   },
 
   see: {
-    fontWeight: 400,
+    fontWeight: '400',
     fontSize: 15,
     color: "white",
     textDecorationLine: "underline",
@@ -367,7 +368,7 @@ const styles = StyleSheet.create({
 
   itemTitle: {
     fontSize: 17.04,
-    fontWeight: 600,
+    fontWeight: '600',
     color: "white",
     marginBottom: 4,
     width: 170,
@@ -376,7 +377,7 @@ const styles = StyleSheet.create({
   start: {
     color: "white",
     fontSize: 17.04,
-    fontWeight: 400,
+    fontWeight: '400',
     opacity: 0.75,
   },
 
@@ -403,7 +404,7 @@ const styles = StyleSheet.create({
     color: "white",
 
     fontSize: 13.74,
-    fontWeight: 400,
+    fontWeight: '400',
 
     opacity: 0.75,
   },
@@ -423,7 +424,7 @@ const styles = StyleSheet.create({
   ballText: {
     color: "white",
     fontSize: 10,
-    fontWeight: 400,
+    fontWeight: '400',
     marginRight: 10,
   },
   chartNav: {

@@ -110,7 +110,7 @@ const RegisterScreen = ({ navigation }) => {
         </View>
 
         <TouchableHighlight onPress={registerFunc} style={styles.loginBtn}>
-          <Text style={{ color: "white", fontWeight: 500, fontSize: 20 }}>
+          <Text style={{ color: "white", fontWeight: '500', fontSize: 20 }}>
             Create my Account
             {loading && <ActivityIndicator size="large" color="#0000ff" />}
           </Text>
@@ -162,7 +162,7 @@ const styles = StyleSheet.create({
   },
   login: {
     fontSize: 32,
-    fontWeight: 600,
+    fontWeight: '600',
     color: "#fff",
     marginLeft: 20,
     marginTop: 15,
@@ -171,7 +171,7 @@ const styles = StyleSheet.create({
     marginLeft: 20,
     marginTop: 20,
   },
-  titles: { fontWeight: 500, fontSize: 20, color: "#fff", marginTop: 5 },
+  titles: { fontWeight: '500', fontSize: 20, color: "#fff", marginTop: 5 },
   inputs: {
     borderWidth: 1,
     borderStyle: "solid",
@@ -192,7 +192,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     borderRadius: 1000,
     fontSize: 16,
-    fontWeight: 500,
+    fontWeight: '500',
     marginTop: 70,
     marginLeft: 20,
   },

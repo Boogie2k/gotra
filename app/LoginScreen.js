@@ -14,6 +14,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { jwtDecode } from "jwt-decode";
 import { decode as atob, encode as btoa } from "base-64";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import * as SecureStore from 'expo-secure-store';
 
 const LoginScreen = ({ navigation, isLoggedIn, setIsLoggedIn }) => {
   const [email, setEmail] = useState("");
@@ -28,6 +29,7 @@ const LoginScreen = ({ navigation, isLoggedIn, setIsLoggedIn }) => {
         // value previously stored
         console.log(loginVal);
       } else {
+        
         console.log("emp");
       }
     } catch (e) {
@@ -38,13 +40,7 @@ const LoginScreen = ({ navigation, isLoggedIn, setIsLoggedIn }) => {
 
   getData();
 
-  const storeData = async (value) => {
-    try {
-      await AsyncStorage.setItem("my-key", value);
-    } catch (e) {
-      // saving error
-    }
-  };
+
 
   if (!global.btoa) {
     global.btoa = btoa;
@@ -53,7 +49,7 @@ const LoginScreen = ({ navigation, isLoggedIn, setIsLoggedIn }) => {
     global.atob = atob;
   }
 
-  const loginFunc = () => {
+  const loginFunc =  async () => {
     setLoading(true);
     if (!email || !password) {
       alert("credentials can not be empty");
@@ -81,13 +77,14 @@ const LoginScreen = ({ navigation, isLoggedIn, setIsLoggedIn }) => {
             let user = jwtDecode(data.token);
 
             AsyncStorage.setItem("my-key", data.token);
+            SecureStore.setItemAsync('gotraKey', data.token);
             setLoading(false);
             setIsLoggedIn(!isLoggedIn);
             //user && console.log(user);
             // console.log(user);
           }
           // navigation.navigate("Home", { name: "HomePge" });
-          console.log(data);
+          console.log({toks:data.token});
         })
         .catch((err) => {
           setLoading(false);
@@ -104,7 +101,7 @@ const LoginScreen = ({ navigation, isLoggedIn, setIsLoggedIn }) => {
           style={{
             marginLeft: 20,
             marginTop: 15,
-            fontWeight: 400,
+            fontWeight: '400',
             fontSize: 20,
           }}
         >
@@ -135,7 +132,7 @@ const LoginScreen = ({ navigation, isLoggedIn, setIsLoggedIn }) => {
           <Text
             style={{
               color: "white",
-              fontWeight: 500,
+              fontWeight: '500',
               fontSize: 20,
               position: "relative",
             }}
@@ -188,7 +185,7 @@ const styles = StyleSheet.create({
   },
   login: {
     fontSize: 32,
-    fontWeight: 600,
+    fontWeight: '600',
     color: "#fff",
     marginLeft: 20,
     marginTop: 40,
@@ -197,7 +194,7 @@ const styles = StyleSheet.create({
     marginLeft: 20,
     marginTop: 20,
   },
-  titles: { fontWeight: 500, fontSize: 20, color: "#fff", marginTop: 5 },
+  titles: { fontWeight: '500', fontSize: 20, color: "#fff", marginTop: 5 },
   inputs: {
     borderWidth: 1,
     borderStyle: "solid",

@@ -13,6 +13,7 @@ import React, { useEffect, useState } from "react";
 import { AntDesign } from "@expo/vector-icons";
 import { Entypo } from "@expo/vector-icons";
 import { Ionicons } from "@expo/vector-icons";
+import * as SecureStore from 'expo-secure-store';
 
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
@@ -82,8 +83,16 @@ const GoalDetailsScreen = ({ route, setReloadHome, navigation }) => {
     }
   }, [progressPercentage]);
 
-  const deleteGoal = () => {
-    fetch(`https://gotra-api-inh9.onrender.com/api/v1/goal/${item._id}/`, {
+
+
+  const deleteGoal = async () => {
+  const token =await SecureStore.getItemAsync('gotraKey');
+
+
+    fetch(`https://gotra-api-inh9.onrender.com/api/v1/goal/${item._id}`, {
+    headers:{
+        'Authorization': `Bearer ${token}`,
+    },
       method: "DELETE",
     })
       .then((response) => {
@@ -129,7 +138,10 @@ const GoalDetailsScreen = ({ route, setReloadHome, navigation }) => {
   const [newFormattedEndDate, setNewFormattedEndDate] =
     useState(formattedendDate);
 
-  const saveGoal = () => {
+  const saveGoal = async () => {
+
+    try {
+      const token =await SecureStore.getItemAsync('gotraKey');
     if (!title) {
       alert("title can not be empty");
     } else if (!description) {
@@ -139,6 +151,7 @@ const GoalDetailsScreen = ({ route, setReloadHome, navigation }) => {
       fetch(`https://gotra-api-inh9.onrender.com/api/v1/goal/${item._id}/`, {
         method: "PATCH",
         headers: {
+          'Authorization': `Bearer ${token}`,
           "content-type": "application/json",
         },
         body: JSON.stringify({
@@ -174,6 +187,12 @@ const GoalDetailsScreen = ({ route, setReloadHome, navigation }) => {
           saveModalError();
         });
     }
+      
+    } catch (error) {
+      console.log(error); 
+      
+    }
+      
   };
 
   return (
@@ -224,11 +243,11 @@ const GoalDetailsScreen = ({ route, setReloadHome, navigation }) => {
         </View>
 
         <View style={styles.tl}>
-          <Text style={{ color: "white", fontSize: 22, fontWeight: 600 }}>
+          <Text style={{ color: "white", fontSize: 22, fontWeight: '600' }}>
             Timeline
           </Text>
           <View style={{ minHeight: 60, justifyContent: "space-between" }}>
-            <Text style={{ color: "white", fontWeight: 500, fontSize: 16 }}>
+            <Text style={{ color: "white", fontWeight: '500', fontSize: 16 }}>
               Start Date
             </Text>
 
@@ -237,7 +256,7 @@ const GoalDetailsScreen = ({ route, setReloadHome, navigation }) => {
             </Text>
           </View>
           <View style={{ minHeight: 60, justifyContent: "space-between" }}>
-            <Text style={{ color: "white", fontWeight: 500, fontSize: 16 }}>
+            <Text style={{ color: "white", fontWeight: '500', fontSize: 16 }}>
               End Date
             </Text>
 
@@ -270,7 +289,7 @@ const GoalDetailsScreen = ({ route, setReloadHome, navigation }) => {
                 minHeight: 34,
                 width: `${progressPercentage}%`,
                 fontSize: 18,
-                fontWeight: 500,
+                fontWeight: '500',
               }}
             >
               {progressPercentage}%
@@ -286,7 +305,7 @@ const GoalDetailsScreen = ({ route, setReloadHome, navigation }) => {
                 borderRadius: 50,
 
                 fontSize: 18,
-                fontWeight: 500,
+                fontWeight: '500',
               }}
             >
               0%
@@ -295,7 +314,7 @@ const GoalDetailsScreen = ({ route, setReloadHome, navigation }) => {
         </View>
 
         <View>
-          <Text style={{ color: "white", fontWeight: 600, fontSize: 22 }}>
+          <Text style={{ color: "white", fontWeight: '600', fontSize: 22 }}>
             sub-goals
           </Text>
 
@@ -374,7 +393,7 @@ const GoalDetailsScreen = ({ route, setReloadHome, navigation }) => {
         </View>
 
         <View style={{ marginTop: 20 }}>
-          <Text style={{ color: "white", fontWeight: 600, fontSize: 22 }}>
+          <Text style={{ color: "white", fontWeight: '600', fontSize: 22 }}>
             Tags
           </Text>
 
@@ -415,7 +434,7 @@ const GoalDetailsScreen = ({ route, setReloadHome, navigation }) => {
             marginTop: 30,
           }}
         >
-          <Text style={{ color: "white", fontWeight: 600, fontSize: 22 }}>
+          <Text style={{ color: "white", fontWeight: '600', fontSize: 22 }}>
             Status
           </Text>
           <View style={{ flexDirection: "row" }}>
@@ -431,7 +450,7 @@ const GoalDetailsScreen = ({ route, setReloadHome, navigation }) => {
               size={24}
               color={onHold ? "red" : "white"}
             />
-            <Text style={{ color: "white", fontWeight: 500, fontSize: 17 }}>
+            <Text style={{ color: "white", fontWeight: '500', fontSize: 17 }}>
               on hold
             </Text>
           </View>
@@ -450,7 +469,7 @@ const GoalDetailsScreen = ({ route, setReloadHome, navigation }) => {
                 }
               }}
             />
-            <Text style={{ color: "white", fontWeight: 500, fontSize: 17 }}>
+            <Text style={{ color: "white", fontWeight: '500', fontSize: 17 }}>
               completed
             </Text>
           </View>
@@ -468,6 +487,7 @@ const GoalDetailsNav = ({ saveGoal, deleteGoal, loader, navigation }) => {
         justifyContent: "space-between",
         paddingRight: 15,
         marginBottom: 20,
+        paddingTop:10
       }}
     >
       <AntDesign
@@ -478,7 +498,7 @@ const GoalDetailsNav = ({ saveGoal, deleteGoal, loader, navigation }) => {
           navigation.goBack();
         }}
       />
-      <Text style={{ fontSize: 20, fontWeight: 600, color: "white" }}>
+      <Text style={{ fontSize: 20, fontWeight: '600', color: "white" }}>
         Goal Details
       </Text>
       <View style={{ flexDirection: "row" }}>
@@ -525,7 +545,7 @@ const styles = StyleSheet.create({
 
   header: {
     fontSize: 30,
-    // fontWeight: 600,
+    fontWeight: '600',
     color: "white",
   },
   desc: {
@@ -535,7 +555,7 @@ const styles = StyleSheet.create({
   },
   descText: {
     fontSize: 22,
-    fontWeight: 600,
+    fontWeight: '600',
     color: "white",
   },
   descInput: {
